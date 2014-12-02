@@ -76,11 +76,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Roles\When_creating_roles.cs" />
+    <Compile Include="Roles\When_deleting_roles.cs" />
+    <Compile Include="Roles\When_reading_roles.cs" />
+    <Compile Include="Roles\When_updating_role.cs" />
     <Compile Include="SetupFixture.cs" />
-    <Compile Include="When_creating_roles.cs" />
-    <Compile Include="When_deleting_roles.cs" />
-    <Compile Include="When_reading_roles.cs" />
-    <Compile Include="When_updating_role.cs" />
+    <Compile Include="User\When_creating_users.cs" />
+    <Compile Include="User\When_deleting_user.cs" />
+    <Compile Include="User\When_reading_users.cs" />
+    <Compile Include="User\When_updating_user.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -99,6 +103,7 @@
       <Name>Simple.Data.AspNet.Identity</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

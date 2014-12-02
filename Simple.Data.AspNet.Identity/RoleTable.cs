@@ -124,7 +124,7 @@ namespace Simple.Data.AspNet.Identity {
 
         public int Update(IdentityRole role) 
         {
-            return db.AspNetRoles.UpdateById(Id: role.Id, Name: role.Name);
+            return db.AspNetRoles.UpdateById(role);
         }
 
         public IEnumerable<TRole> AllRoles<TRole>() {
