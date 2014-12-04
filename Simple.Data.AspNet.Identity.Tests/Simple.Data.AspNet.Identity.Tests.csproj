@@ -81,6 +81,11 @@
     <Compile Include="Roles\When_reading_roles.cs" />
     <Compile Include="Roles\When_updating_role.cs" />
     <Compile Include="SetupFixture.cs" />
+    <Compile Include="TestData.cs" />
+    <Compile Include="UserRoles\When_adding_role_for_a_user.cs" />
+    <Compile Include="UserRoles\When_removing_a_role_from_a_user.cs" />
+    <Compile Include="UserRoles\When_role_is_deleted.cs" />
+    <Compile Include="UserRoles\When_user_is_deleted.cs" />
     <Compile Include="User\When_creating_users.cs" />
     <Compile Include="User\When_deleting_user.cs" />
     <Compile Include="User\When_reading_users.cs" />

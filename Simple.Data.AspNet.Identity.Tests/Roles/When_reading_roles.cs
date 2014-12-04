@@ -9,7 +9,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Roles {
         [SetUp]
         public void SetUp() {
             DatabaseHelper.Reset();
-            AddRoles();
+            TestData.AddRoles();
             _target = new RoleStore<IdentityRole>();
         }
 
@@ -55,14 +55,5 @@ namespace Simple.Data.AspNet.Identity.Tests.Roles {
             Assert.That(role, Is.Not.Null);
             Assert.That(role.Name, Is.EqualTo("Admin"));
         }
-
-        public void AddRoles() 
-        {
-            dynamic db = Database.Open();
-
-            db.AspNetRoles.Insert(Id: "57384BB3-3D5F-4183-A03D-77408D8F225B", Name: "Admin");
-            db.AspNetRoles.Insert(Id: "259591EC-A59C-4C16-AD1E-1A24AB445463", Name: "User");
-        }
-
     }
 }

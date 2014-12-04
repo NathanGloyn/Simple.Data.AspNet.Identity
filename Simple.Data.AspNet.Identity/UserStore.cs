@@ -8,10 +8,14 @@ namespace Simple.Data.AspNet.Identity {
     public class UserStore<TUser>:IQueryableUserStore<TUser>, IUserRoleStore<TUser> where TUser: IdentityUser {
         
         private readonly UserTable _userTable;
+        private readonly RoleTable _roleTable;
+        private readonly UserRoleTable _userRoleTable;
 
         public UserStore() {
             dynamic database = Database.Open();
             _userTable = new UserTable(database);
+            _roleTable = new RoleTable(database);
+            _userRoleTable = new UserRoleTable(database);
         }        
         
         public void Dispose() {
@@ -77,12 +81,57 @@ namespace Simple.Data.AspNet.Identity {
             get { return _userTable.AllUsers<TUser>().AsQueryable(); }
         }
 
-        public Task AddToRoleAsync(TUser user, string roleName) {
-            throw new NotImplementedException();
+        public Task AddToRoleAsync(TUser user, string roleName)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            if (string.IsNullOrWhiteSpace(roleName))
+            {
+                throw new ArgumentException("Argument cannot be null or empty: roleName.");
+            }
+
+            string roleId = _roleTable.GetRoleId(roleName);
+
+            if (string.IsNullOrEmpty(roleId)) 
+            {
+                throw new ArgumentException("Unknown role: " + roleName);    
+            }
+
+            if (!string.IsNullOrEmpty(roleId))
+            {
+                _userRoleTable.Insert(user, roleId);
+            }
+
+            return Task.FromResult<object>(null);
         }
 
-        public Task RemoveFromRoleAsync(TUser user, string roleName) {
-            throw new NotImplementedException();
+        public Task RemoveFromRoleAsync(TUser user, string roleName) 
+        {
+            if (user == null) {
+                throw new ArgumentNullException("user");
+            }
+
+            if (string.IsNullOrWhiteSpace(roleName))
+            {
+                throw new ArgumentException("Argument cannot be null or empty: roleName.");
+            }
+
+            string roleId = _roleTable.GetRoleId(roleName);
+
+            if (string.IsNullOrEmpty(roleId))
+            {
+                throw new ArgumentException("Unknown role: " + roleName);
+            }
+
+            if (!string.IsNullOrEmpty(roleId))
+            {
+                _userRoleTable.Delete(user, roleId);
+            }
+
+            return Task.FromResult<object>(null);
         }
 
         public Task<IList<string>> GetRolesAsync(TUser user) {

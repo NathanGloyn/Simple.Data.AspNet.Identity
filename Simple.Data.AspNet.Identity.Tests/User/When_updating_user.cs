@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Remoting;
 using NUnit.Framework;
 
 namespace Simple.Data.AspNet.Identity.Tests.User {
@@ -12,7 +11,7 @@ namespace Simple.Data.AspNet.Identity.Tests.User {
         public void SetUp()
         {
             DatabaseHelper.Reset();
-            AddUsers();
+            TestData.AddUsers();
             _target = new UserStore<IdentityUser>();
         }
 
@@ -51,14 +50,6 @@ namespace Simple.Data.AspNet.Identity.Tests.User {
 
             Assert.That(updatedUser.PhoneNumber, Is.EqualTo("0800 12345678"));
 
-        }
-
-        private void AddUsers()
-        {
-            dynamic db = Database.Open();
-
-            db.AspNetUsers.Insert(Id: "4455E2EB-B7F8-4C17-940B-199922298A02", UserName: "John", Email: "John@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0);
-            db.AspNetUsers.Insert(Id: "30222D63-8AD0-4A21-9B68-32ADC4FF3F45", UserName: "Sue", Email: "Sue@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0);
         }
     }
 }
