@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Simple.Data.Microsoft.AspNet.Identity</id>
+    <version>0.0.0.1</version>
+    <title>Simple.Data ASP.NET Identity</title>
+    <authors>N Gloyn</authors>
+    <owners>N Gloyn</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Implementation of Microsoft Asp.Net identity using Simple.Data for database access</description>
+    <releaseNotes>Initial Version</releaseNotes>
+    <copyright>Copyright 2014</copyright>
+    <tags>Simple.Data</tags>
+  </metadata>
+</package>

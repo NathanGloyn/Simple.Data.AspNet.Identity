@@ -1,4 +1,6 @@
-﻿namespace Simple.Data.AspNet.Identity {
+﻿using System.Collections.Generic;
+
+namespace Simple.Data.AspNet.Identity {
     public class UserRoleTable 
     {
         private readonly dynamic db;
@@ -15,6 +17,11 @@
 
         public void Delete(IdentityUser user, string roleId) {
             db.AspNetUserRole.Delete(UserId: user.Id, RoleId: roleId);
+        }
+
+        public IEnumerable<IdentityRole> FindByUserId(string userId) {
+            return db.AspNetUserRole.FindAllByUserId(userId)
+                 .Select(db.AspNetUserRole.AspNetRole.Name, db.AspNetUserRole.RoleId);
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 
 namespace Simple.Data.AspNet.Identity {
-    public class UserStore<TUser>:IQueryableUserStore<TUser>, IUserRoleStore<TUser> where TUser: IdentityUser {
+    public class UserStore<TUser>:IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser> where TUser: IdentityUser {
         
         private readonly UserTable _userTable;
         private readonly RoleTable _roleTable;
@@ -135,11 +135,30 @@ namespace Simple.Data.AspNet.Identity {
         }
 
         public Task<IList<string>> GetRolesAsync(TUser user) {
-            throw new NotImplementedException();
+            if (user == null) {
+                throw new ArgumentNullException("user");
+            }
+
+            IList<string> roleNames = _userRoleTable.FindByUserId(user.Id)
+                                                    .Select(role => role.Name)
+                                                    .ToList();
+
+            return Task.FromResult(roleNames);
         }
 
         public Task<bool> IsInRoleAsync(TUser user, string roleName) {
-            throw new NotImplementedException();
+            if (user == null) {
+                throw new ArgumentNullException("user");
+            }
+
+            if (string.IsNullOrWhiteSpace(roleName)) {
+                throw new ArgumentNullException("roleName");
+            }
+
+            var userRoles = _userRoleTable.FindByUserId(user.Id);
+
+            return Task.FromResult(userRoles.Any(x => x.Name == roleName));
+
         }
     }
 }
