@@ -36,11 +36,6 @@ namespace Simple.Data.AspNet.Identity {
         /// <returns></returns>
         public void Insert(IdentityRole role) 
         {
-
-            if (role == null) {
-                throw new ArgumentNullException("role");
-            }
-
             db.AspNetRoles.Insert(role);
         }
 

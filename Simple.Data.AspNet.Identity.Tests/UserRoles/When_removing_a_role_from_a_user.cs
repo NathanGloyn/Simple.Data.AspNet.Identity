@@ -35,7 +35,7 @@ namespace Simple.Data.AspNet.Identity.Tests.UserRoles {
         {
             var user = new IdentityUser();
 
-            Assert.That(() => _target.AddToRoleAsync(user, "SuperUser"), Throws.ArgumentException.With.Message.EqualTo("Unknown role: SuperUser"));
+            Assert.That(() => _target.RemoveFromRoleAsync(user, "SuperUser"), Throws.ArgumentException.With.Message.EqualTo("Unknown role: SuperUser"));
         }
 
         [Test]

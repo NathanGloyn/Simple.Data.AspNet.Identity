@@ -25,6 +25,16 @@ namespace Simple.Data.AspNet.Identity.Tests.Roles {
         }
 
         [Test]
+        public void Should_return_null_for_unknown_role_id() 
+        {
+            var task = _target.FindByIdAsync("123");
+
+            task.Wait();
+
+            Assert.That(task.Result, Is.Null);
+        }
+
+        [Test]
         public void Should_return_role_based_on_role_name() {
             
             var task = _target.FindByNameAsync("Admin");
