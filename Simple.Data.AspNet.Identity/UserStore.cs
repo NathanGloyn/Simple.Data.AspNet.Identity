@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 
 namespace Simple.Data.AspNet.Identity {
-    public class UserStore<TUser>:IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser> where TUser: IdentityUser {
+    public class UserStore<TUser>:IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser>, IUserPasswordStore<TUser> where TUser: IdentityUser {
         
         private readonly UserTable _userTable;
         private readonly RoleTable _roleTable;
@@ -19,7 +19,7 @@ namespace Simple.Data.AspNet.Identity {
         }        
         
         public void Dispose() {
-            throw new System.NotImplementedException();
+            // we can let normal GC behaviour to clean up
         }
 
         public Task CreateAsync(TUser user) {
@@ -159,6 +159,48 @@ namespace Simple.Data.AspNet.Identity {
 
             return Task.FromResult(userRoles.Any(x => x.Name == roleName));
 
+        }
+
+        public Task SetPasswordHashAsync(TUser user, string passwordHash) 
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            if (string.IsNullOrWhiteSpace(passwordHash))
+            {
+                throw new ArgumentException("Invalid password hash value","passwordHash");
+            }
+
+            user.PasswordHash = passwordHash;
+
+            _userTable.Update(user);
+
+            return Task.FromResult<object>(null);
+        }
+
+        public Task<string> GetPasswordHashAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            string passwordHash = _userTable.GetPasswordHash(user);
+
+            return Task.FromResult(passwordHash);
+        }
+
+        public Task<bool> HasPasswordAsync(TUser user) {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            var result = !string.IsNullOrEmpty(_userTable.GetPasswordHash(user));
+
+            return Task.FromResult(result);
         }
     }
 }

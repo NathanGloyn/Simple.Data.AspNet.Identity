@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO.Pipes;
 
 namespace Simple.Data.AspNet.Identity {
     public class UserTable {
@@ -42,6 +43,17 @@ namespace Simple.Data.AspNet.Identity {
 
         public IEnumerable<TUser> AllUsers<TUser>() {
             return db.AspNetUsers.All();
+        }
+
+        public string GetPasswordHash(IdentityUser user) {
+            var userDetails =  GetUserById(user.Id);
+
+            if (userDetails != null)
+            {
+                return userDetails.PasswordHash;
+            }
+            
+            return string.Empty;
         }
     }
 }
