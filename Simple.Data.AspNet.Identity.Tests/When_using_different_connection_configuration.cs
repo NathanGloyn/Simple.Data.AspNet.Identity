@@ -3,7 +3,7 @@
 namespace Simple.Data.AspNet.Identity.Tests
 {
     [TestFixture]
-    public class When_creating_UserStore
+    public class When_using_different_connection_configuration
     {
         [SetUp]
         public void SetUp()
