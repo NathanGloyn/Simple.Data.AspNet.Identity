@@ -68,6 +68,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomTables\When_configuring_tables.cs" />
+    <Compile Include="CustomTables\When_working_with_custom_table.cs" />
     <Compile Include="DatabaseHelper.cs" />
     <Compile Include="DatabaseSupport.cs" />
     <Compile Include="Password\When_checking_for_password_hash.cs" />

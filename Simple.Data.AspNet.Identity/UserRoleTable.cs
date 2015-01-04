@@ -3,25 +3,27 @@
 namespace Simple.Data.AspNet.Identity {
     public class UserRoleTable 
     {
-        private readonly dynamic db;
+        private readonly dynamic _db;
+        private readonly Tables _tables;
 
-        public UserRoleTable(dynamic db) 
+        public UserRoleTable(dynamic db, Tables tables) 
         {
-            this.db = db;
+            _db = db;
+            _tables = tables;
         }
 
 
         public void Insert(IdentityUser user, string roleId) {
-            db[DefaultTables.UserRoles].Insert(UserId: user.Id, roleId: roleId);
+            _db[_tables.UsersRoles].Insert(UserId: user.Id, roleId: roleId);
         }
 
         public void Delete(IdentityUser user, string roleId) {
-            db[DefaultTables.UserRoles].Delete(UserId: user.Id, RoleId: roleId);
+            _db[_tables.UsersRoles].Delete(UserId: user.Id, RoleId: roleId);
         }
 
         public IEnumerable<IdentityRole> FindByUserId(string userId) {
-            return db[DefaultTables.UserRoles].FindAllByUserId(userId)
-                 .Select(db[DefaultTables.UserRoles][DefaultTables.Roles].Name, db.AspNetUserRole.RoleId);
+            return _db[_tables.UsersRoles].FindAllByUserId(userId)
+                 .Select(_db[_tables.UsersRoles][_tables.Roles].Name, _db[_tables.UsersRoles].RoleId);
         }
     }
 }

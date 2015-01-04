@@ -3,45 +3,48 @@
 namespace Simple.Data.AspNet.Identity {
     public class UserTable {
 
-        private readonly dynamic db;
+        private readonly dynamic _db;
+        private readonly Tables _tables;
 
         /// <summary>
         /// Constructor that takes a MySQLDatabase instance 
         /// </summary>
-        /// <param name="db"></param>
-        public UserTable(dynamic db) 
+        /// <param name="db">Simple.Data database object</param>
+        /// <param name="userTable">Name of the users table</param>
+        public UserTable(dynamic db, Tables userTable) 
         {
-            this.db = db;
+            _db = db;
+            _tables = userTable;
         }
 
         public void Insert(IdentityUser user)
         {
-            db[DefaultTables.Users].Insert(user);
+            _db[_tables.Users].Insert(user);
         }
 
         public int Delete(string id) {
-            return db[DefaultTables.Users].DeleteById(id);
+            return _db[_tables.Users].DeleteById(id);
         }
 
         public IdentityUser GetUserById(string userId) 
         {
-            return db[DefaultTables.Users]
+            return _db[_tables.Users]
                      .FindAllById(userId)
                      .FirstOrDefault();
         }
 
         public IdentityUser GetUserByName(string userName) {
-            return db[DefaultTables.Users]
+            return _db[_tables.Users]
                      .FindAllByUserName(userName)
                      .FirstOrDefault();
         }
 
         public int Update(IdentityUser user) {
-            return db[DefaultTables.Users].UpdateById(user);
+            return _db[_tables.Users].UpdateById(user);
         }
 
         public IEnumerable<TUser> AllUsers<TUser>() {
-            return db[DefaultTables.Users].All();
+            return _db[_tables.Users].All();
         }
 
         public string GetPasswordHash(IdentityUser user) {

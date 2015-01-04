@@ -88,6 +88,93 @@ ALTER TABLE [dbo].[AspNetUserRoles]  WITH CHECK
 ALTER TABLE [dbo].[AspNetUserRoles] CHECK CONSTRAINT [FK_dbo.AspNetUserRoles_dbo.AspNetUsers_UserId];
 GO
 
+CREATE TABLE [dbo].[MyRoles](
+	[Id] [nvarchar](128) NOT NULL,
+	[Name] [nvarchar](256) NOT NULL
+);
+
+ALTER TABLE [dbo].[MyRoles]
+	ADD CONSTRAINT [PK_dbo.MyRole] PRIMARY KEY CLUSTERED ([Id] ASC);
+
+
+CREATE TABLE [dbo].[MyUserClaims](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [nvarchar](128) NOT NULL,
+	[ClaimType] [nvarchar](max) NULL,
+	[ClaimValue] [nvarchar](max) NULL
+);
+
+ALTER TABLE [dbo].[MyUserClaims]
+	ADD CONSTRAINT [PK_dbo.MyUserClaims] PRIMARY KEY CLUSTERED ( [Id] ASC);
+
+
+CREATE TABLE [dbo].[MyUserLogins](
+	[LoginProvider] [nvarchar](128) NOT NULL,
+	[ProviderKey] [nvarchar](128) NOT NULL,
+	[UserId] [nvarchar](128) NOT NULL
+);
+
+ALTER TABLE [dbo].[MyUserLogins]
+	ADD CONSTRAINT [PK_dbo.MyUserLogins] PRIMARY KEY CLUSTERED (
+		[LoginProvider] ASC,
+		[ProviderKey] ASC,
+		[UserId] ASC
+	);
+
+CREATE TABLE [dbo].[MyUserRoles](
+	[UserId] [nvarchar](128) NOT NULL,
+	[RoleId] [nvarchar](128) NOT NULL
+);
+
+ALTER TABLE [dbo].[MyUserRoles]
+	ADD CONSTRAINT [PK_dbo.MyUserRoles] PRIMARY KEY CLUSTERED (
+		[UserId] ASC,
+		[RoleId] ASC
+	);
+
+CREATE TABLE [dbo].[MyUsers](
+	[Id] [nvarchar](128) NOT NULL,
+	[Email] [nvarchar](256) NULL,
+	[EmailConfirmed] [bit] NOT NULL,
+	[PasswordHash] [nvarchar](max) NULL,
+	[SecurityStamp] [nvarchar](max) NULL,
+	[PhoneNumber] [nvarchar](max) NULL,
+	[PhoneNumberConfirmed] [bit] NOT NULL,
+	[TwoFactorEnabled] [bit] NOT NULL,
+	[LockoutEndDateUtc] [datetime] NULL,
+	[LockoutEnabled] [bit] NOT NULL,
+	[AccessFailedCount] [int] NOT NULL,
+	[UserName] [nvarchar](256) NOT NULL
+);
+
+ALTER TABLE [dbo].[MyUsers]
+	ADD CONSTRAINT [PK_dbo.MyUsers] PRIMARY KEY CLUSTERED ([Id] ASC);
+		
+ALTER TABLE [dbo].[MyUserClaims]  WITH CHECK 
+	ADD CONSTRAINT [FK_dbo.MyUserClaims_dbo.MyUsers_UserId] FOREIGN KEY([UserId]) REFERENCES [dbo].[MyUsers] ([Id]) ON DELETE CASCADE;
+
+
+ALTER TABLE [dbo].[MyUserClaims] CHECK CONSTRAINT [FK_dbo.MyUserClaims_dbo.MyUsers_UserId];
+
+ALTER TABLE [dbo].[MyUserLogins]  WITH CHECK 
+	ADD  CONSTRAINT [FK_dbo.MyUserLogins_dbo.MyUsers_UserId] FOREIGN KEY([UserId]) REFERENCES [dbo].[MyUsers] ([Id]) ON DELETE CASCADE;
+
+ALTER TABLE [dbo].[MyUserLogins] CHECK CONSTRAINT [FK_dbo.MyUserLogins_dbo.MyUsers_UserId];
+
+
+ALTER TABLE [dbo].[MyUserRoles]  WITH CHECK 
+	ADD  CONSTRAINT [FK_dbo.MyUserRoles_dbo.MyRoles_RoleId] FOREIGN KEY([RoleId]) REFERENCES [dbo].[MyRoles] ([Id])	ON DELETE CASCADE;
+
+
+ALTER TABLE [dbo].[MyUserRoles] CHECK CONSTRAINT [FK_dbo.MyUserRoles_dbo.MyRoles_RoleId];
+
+
+ALTER TABLE [dbo].[MyUserRoles]  WITH CHECK 
+	ADD  CONSTRAINT [FK_dbo.MyUserRoles_dbo.MyUsers_UserId] FOREIGN KEY([UserId]) REFERENCES [dbo].[MyUsers] ([Id])	ON DELETE CASCADE;
+
+ALTER TABLE [dbo].[MyUserRoles] CHECK CONSTRAINT [FK_dbo.MyUserRoles_dbo.MyUsers_UserId];
+GO
+
 CREATE PROCEDURE dbo.TestReset
 AS
 BEGIN
@@ -100,6 +187,14 @@ BEGIN
 	DELETE [dbo].[AspNetRoles];
 	DELETE [dbo].[AspNetUserLogins];
 	DELETE [dbo].[AspNetUsers];
+
+	DELETE [dbo].[MyUserClaims];
+	DBCC CHECKIDENT ('dbo.MyUserClaims',RESEED, 0);
+
+	DELETE [dbo].[MyUserRoles];
+	DELETE [dbo].[MyRoles];
+	DELETE [dbo].[MyUserLogins];
+	DELETE [dbo].[MyUsers];
 
 END
 GO

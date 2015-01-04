@@ -8,15 +8,18 @@ namespace Simple.Data.AspNet.Identity {
     /// </summary>
     public class RoleTable
     {
-        private readonly dynamic db;
+        private readonly dynamic _db;
+        private readonly Tables _tables;
 
         /// <summary>
-        /// Constructor that takes a MySQLDatabase instance 
+        /// Constructor that takes a Simple.Data db instance 
         /// </summary>
-        /// <param name="db"></param>
-        public RoleTable(dynamic db) 
+        /// <param name="db">Simple.Data database instance</param>
+        /// <param name="tables"><see cref="Tables"/> instance with table names</param>
+        public RoleTable(dynamic db, Tables tables) 
         {
-            this.db = db;
+            _db = db;
+            _tables = tables;
         }
 
         /// <summary>
@@ -26,7 +29,7 @@ namespace Simple.Data.AspNet.Identity {
         /// <returns></returns>
         public int Delete(string roleId)
         {
-            return db[DefaultTables.Roles].DeleteById(roleId);
+            return _db[_tables.Roles].DeleteById(roleId);
         }
 
         /// <summary>
@@ -36,7 +39,7 @@ namespace Simple.Data.AspNet.Identity {
         /// <returns></returns>
         public void Insert(IdentityRole role) 
         {
-            db[DefaultTables.Roles].Insert(role);
+            _db[_tables.Roles].Insert(role);
         }
 
         /// <summary>
@@ -46,9 +49,9 @@ namespace Simple.Data.AspNet.Identity {
         /// <returns>Roles name</returns>
         public string GetRoleName(string roleId)
         {
-            var result = db[DefaultTables.Roles]
+            var result = _db[_tables.Roles]
                      .FindAllById(roleId)
-                     .Select(db[DefaultTables.Roles].Name)
+                     .Select(_db[_tables.Roles].Name)
                      .FirstOrDefault();
 
             if (result != null) 
@@ -66,9 +69,9 @@ namespace Simple.Data.AspNet.Identity {
         /// <returns>Roles's Id</returns>
         public string GetRoleId(string roleName)
         {
-            var result = db[DefaultTables.Roles]
+            var result = _db[_tables.Roles]
                            .FindAllByName(roleName)
-                           .Select(db[DefaultTables.Roles].Id)
+                           .Select(_db[_tables.Roles].Id)
                            .FirstOrDefault();
 
             if (result != null)
@@ -119,11 +122,11 @@ namespace Simple.Data.AspNet.Identity {
 
         public int Update(IdentityRole role) 
         {
-            return db[DefaultTables.Roles].UpdateById(role);
+            return _db[_tables.Roles].UpdateById(role);
         }
 
         public IEnumerable<TRole> AllRoles<TRole>() {
-            return db[DefaultTables.Roles].All().ToList<TRole>();
+            return _db[_tables.Roles].All().ToList<TRole>();
         }  
     }
 }

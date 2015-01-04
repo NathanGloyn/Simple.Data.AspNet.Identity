@@ -14,24 +14,29 @@ namespace Simple.Data.AspNet.Identity.Tests
 
         private static readonly dynamic Db = Database.Open();
 
-        public static void AddUsers()
+
+        public static void AddUsers(bool useCustomTables = false)
         {
-            Db.AspNetUsers.Insert(Id: John_UserId, UserName: "John", Email: "John@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0, PasswordHash: "sa;ldfkjsldfjlajte");
-            Db.AspNetUsers.Insert(Id: Sue_UserId, UserName: "Sue", Email: "Sue@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0, PasswordHash: "0uptj0bqoweojf");
-            Db.AspNetUsers.Insert(Id: UserNoRoles_UserId, UserName: "Fred", Email: "Fred@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0);
-            Db.AspNetUsers.Insert(Id: UserNoPasswordHash_UserId, UserName: "Jayne", Email: "jayne@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0);
+            string tableName = useCustomTables ? "MyUsers" : "AspNetUsers";
+
+            Db[tableName].Insert(Id: John_UserId, UserName: "John", Email: "John@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0, PasswordHash: "sa;ldfkjsldfjlajte");
+            Db[tableName].Insert(Id: Sue_UserId, UserName: "Sue", Email: "Sue@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0, PasswordHash: "0uptj0bqoweojf");
+            Db[tableName].Insert(Id: UserNoRoles_UserId, UserName: "Fred", Email: "Fred@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0);
+            Db[tableName].Insert(Id: UserNoPasswordHash_UserId, UserName: "Jayne", Email: "jayne@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0);
         }
 
-        public static void AddRoles()
+        public static void AddRoles(bool useCustomTables = false)
         {
-            Db.AspNetRoles.Insert(Id: Admin_RoleId, Name: "Admin");
-            Db.AspNetRoles.Insert(Id: User_RoleId, Name: "User");
+            string tableName = useCustomTables ? "MyRoles" : "AspNetRoles";
+            Db[tableName].Insert(Id: Admin_RoleId, Name: "Admin");
+            Db[tableName].Insert(Id: User_RoleId, Name: "User");
         }
 
-        public static void AddRolesToUsers()
+        public static void AddRolesToUsers(bool useCustomTables = false)
         {
-            Db.AspNetUserRole.Insert(UserId: John_UserId, RoleId: Admin_RoleId);
-            Db.AspNetUserRole.Insert(UserId: Sue_UserId, RoleId: User_RoleId);
+            string tableName = useCustomTables ? "MyUserRole" : "AspNetUserRole";
+            Db[tableName].Insert(UserId: John_UserId, RoleId: Admin_RoleId);
+            Db[tableName].Insert(UserId: Sue_UserId, RoleId: User_RoleId);
         }
     }
 }

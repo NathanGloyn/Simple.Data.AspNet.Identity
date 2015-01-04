@@ -6,32 +6,56 @@ using Microsoft.AspNet.Identity;
 
 namespace Simple.Data.AspNet.Identity {
     public class UserStore<TUser>:IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser>, IUserPasswordStore<TUser> where TUser: IdentityUser {
-
+        
         private UserTable _userTable;
+        private UserTable UsersTable
+        {
+            get { return _userTable ?? (_userTable = new UserTable(_database, Tables)); }
+        }
+
         private RoleTable _roleTable;
+        public RoleTable RolesTable
+        {
+            get { return _roleTable ?? (_roleTable = new RoleTable(_database, Tables)); }
+        }
+
         private UserRoleTable _userRoleTable;
+        public UserRoleTable UserRolesTable
+        {
+            get { return _userRoleTable ?? (_userRoleTable = new UserRoleTable(_database, Tables)); }
+        }
+
+        private readonly dynamic _database ;
+        
+
+
+        public Tables Tables { get; set; }
+
 
         public UserStore()
         {
-            dynamic database = Database.Open();
-            Init(database);
+            _database = Database.Open();
+            Tables = new Tables();
         }
 
+        public UserStore(Tables tables)
+        {
+            Tables = tables;
+            _database = Database.Open();       
+        }
 
         public UserStore(string connectionName)
         {
-            dynamic database = Database.OpenNamedConnection(connectionName);
-            Init(database);
+           _database = Database.OpenNamedConnection(connectionName);
+           Tables = new Tables();
         }
 
-
-        private void Init(dynamic database)
+        public UserStore(string connectionName, Tables tables)
         {
-            _userTable = new UserTable(database);
-            _roleTable = new RoleTable(database);
-            _userRoleTable = new UserRoleTable(database);
+            _database = Database.OpenNamedConnection(connectionName);
+            Tables = tables;
         }
-        
+
         public void Dispose() {
             // we can let normal GC behaviour to clean up
         }
@@ -42,7 +66,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            _userTable.Insert(user);
+            UsersTable.Insert(user);
 
             return Task.FromResult<object>(null);
         }
@@ -58,7 +82,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentException("Missing Id","user");    
             }
 
-            _userTable.Update(user);
+            UsersTable.Update(user);
 
             return Task.FromResult<object>(null);
         }
@@ -74,25 +98,25 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentException("Missing user Id");
             }
 
-            _userTable.Delete(user.Id);
+            UsersTable.Delete(user.Id);
 
             return Task.FromResult<Object>(null);
         }
 
         public Task<TUser> FindByIdAsync(string userId) {
-            var result = _userTable.GetUserById(userId) as TUser;
+            var result = UsersTable.GetUserById(userId) as TUser;
 
             return Task.FromResult(result);            
         }
 
         public Task<TUser> FindByNameAsync(string userName) {
-            var result = _userTable.GetUserByName(userName) as TUser;
+            var result = UsersTable.GetUserByName(userName) as TUser;
 
             return Task.FromResult(result);
         }
 
         public IQueryable<TUser> Users {
-            get { return _userTable.AllUsers<TUser>().AsQueryable(); }
+            get { return UsersTable.AllUsers<TUser>().AsQueryable(); }
         }
 
         public Task AddToRoleAsync(TUser user, string roleName)
@@ -107,7 +131,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentException("Argument cannot be null or empty: roleName.");
             }
 
-            string roleId = _roleTable.GetRoleId(roleName);
+            string roleId = RolesTable.GetRoleId(roleName);
 
             if (string.IsNullOrEmpty(roleId)) 
             {
@@ -116,7 +140,7 @@ namespace Simple.Data.AspNet.Identity {
 
             if (!string.IsNullOrEmpty(roleId))
             {
-                _userRoleTable.Insert(user, roleId);
+                UserRolesTable.Insert(user, roleId);
             }
 
             return Task.FromResult<object>(null);
@@ -133,7 +157,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentException("Argument cannot be null or empty: roleName.");
             }
 
-            string roleId = _roleTable.GetRoleId(roleName);
+            string roleId = RolesTable.GetRoleId(roleName);
 
             if (string.IsNullOrEmpty(roleId))
             {
@@ -142,7 +166,7 @@ namespace Simple.Data.AspNet.Identity {
 
             if (!string.IsNullOrEmpty(roleId))
             {
-                _userRoleTable.Delete(user, roleId);
+                UserRolesTable.Delete(user, roleId);
             }
 
             return Task.FromResult<object>(null);
@@ -153,7 +177,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            IList<string> roleNames = _userRoleTable.FindByUserId(user.Id)
+            IList<string> roleNames = UserRolesTable.FindByUserId(user.Id)
                                                     .Select(role => role.Name)
                                                     .ToList();
 
@@ -169,7 +193,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("roleName");
             }
 
-            var userRoles = _userRoleTable.FindByUserId(user.Id);
+            var userRoles = UserRolesTable.FindByUserId(user.Id);
 
             return Task.FromResult(userRoles.Any(x => x.Name == roleName));
 
@@ -189,7 +213,7 @@ namespace Simple.Data.AspNet.Identity {
 
             user.PasswordHash = passwordHash;
 
-            _userTable.Update(user);
+            UsersTable.Update(user);
 
             return Task.FromResult<object>(null);
         }
@@ -201,7 +225,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            string passwordHash = _userTable.GetPasswordHash(user);
+            string passwordHash = UsersTable.GetPasswordHash(user);
 
             return Task.FromResult(passwordHash);
         }
@@ -212,7 +236,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            var result = !string.IsNullOrEmpty(_userTable.GetPasswordHash(user));
+            var result = !string.IsNullOrEmpty(UsersTable.GetPasswordHash(user));
 
             return Task.FromResult(result);
         }

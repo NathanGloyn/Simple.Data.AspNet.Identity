@@ -11,7 +11,7 @@ namespace Simple.Data.AspNet.Identity.Tests.UserRoles {
         public void SetUp() 
         {
             DatabaseHelper.Reset();
-            AddRoles();
+            TestData.AddRoles();
             TestData.AddUsers();
             _target = new UserStore<IdentityUser>();    
         }
@@ -54,7 +54,7 @@ namespace Simple.Data.AspNet.Identity.Tests.UserRoles {
         [Test]
         public void Should_add_role_for_user() {
             var user = new IdentityUser();
-            user.Id = "4455E2EB-B7F8-4C17-940B-199922298A02";
+            user.Id = TestData.John_UserId;
 
             var task = _target.AddToRoleAsync(user, "Admin");
 
@@ -63,19 +63,11 @@ namespace Simple.Data.AspNet.Identity.Tests.UserRoles {
             Assert.That(task.IsCompleted,Is.True);
 
             var db = Database.Open();
-            var userRole = db.AspNetUserRole.FindAllByUserId("4455E2EB-B7F8-4C17-940B-199922298A02").FirstOrDefault();
+            var userRole = db.AspNetUserRole.FindAllByUserId(TestData.John_UserId).FirstOrDefault();
             
             Assert.That(userRole, Is.Not.Null);
-            Assert.That(userRole.RoleId, Is.EqualTo("57384BB3-3D5F-4183-A03D-77408D8F225B"));
+            Assert.That(userRole.RoleId, Is.EqualTo(TestData.Admin_RoleId));
 
-        }
-
-        public void AddRoles()
-        {
-            dynamic db = Database.Open();
-
-            db.AspNetRoles.Insert(Id: "57384BB3-3D5F-4183-A03D-77408D8F225B", Name: "Admin");
-            db.AspNetRoles.Insert(Id: "259591EC-A59C-4C16-AD1E-1A24AB445463", Name: "User");
         }
     }
 }

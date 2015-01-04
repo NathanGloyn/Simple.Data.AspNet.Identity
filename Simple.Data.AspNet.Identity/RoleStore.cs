@@ -6,11 +6,37 @@ using Microsoft.AspNet.Identity;
 namespace Simple.Data.AspNet.Identity {
     public class RoleStore<TRole>:IQueryableRoleStore<TRole> where TRole : IdentityRole {
 
-        private readonly RoleTable _roleTable;
+        private RoleTable _roleTable;
+        public RoleTable RoleTable
+        {
+            get { return _roleTable ?? (_roleTable = new RoleTable(_database, Tables)); }
+        }
+
+        private readonly dynamic _database;
+
+        public Tables Tables { get; set; }
 
         public RoleStore() {
-            dynamic database = Database.Open();
-            _roleTable = new RoleTable(database);
+            _database = Database.Open();
+            Tables = new Tables();
+        }
+
+        public RoleStore(string connectionName)
+        {
+            _database = Database.OpenNamedConnection(connectionName);
+            Tables = new Tables();
+        }
+
+        public RoleStore(Tables tables)
+        {
+            _database = Database.Open();
+            Tables = tables;
+        }
+
+        public RoleStore(string connectionName, Tables tables)
+        {
+            _database = Database.OpenNamedConnection(connectionName);
+            Tables = tables;
         }
 
         public void Dispose() {
@@ -31,7 +57,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentException("Missing role Name");    
             }
 
-            _roleTable.Insert(role);
+            RoleTable.Insert(role);
 
             return Task.FromResult<object>(null);
         }
@@ -52,7 +78,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentException("Missing role Name");
             }
 
-            _roleTable.Update(role);
+            RoleTable.Update(role);
 
             return Task.FromResult<object>(null);
         }
@@ -68,25 +94,25 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentException("Missing role Id");
             }
 
-            _roleTable.Delete(role.Id);
+            RoleTable.Delete(role.Id);
 
             return Task.FromResult<Object>(null);
         }
 
         public Task<TRole> FindByIdAsync(string roleId) {
-            var result = _roleTable.GetRoleById(roleId) as TRole;
+            var result = RoleTable.GetRoleById(roleId) as TRole;
 
             return Task.FromResult(result);
         }
 
         public Task<TRole> FindByNameAsync(string roleName) {
-            var result = _roleTable.GetRoleByName(roleName) as TRole;
+            var result = RoleTable.GetRoleByName(roleName) as TRole;
 
             return Task.FromResult(result);
         }
 
         public IQueryable<TRole> Roles {
-            get { return _roleTable.AllRoles<TRole>().AsQueryable(); }
+            get { return RoleTable.AllRoles<TRole>().AsQueryable(); }
         }
     }
 }
