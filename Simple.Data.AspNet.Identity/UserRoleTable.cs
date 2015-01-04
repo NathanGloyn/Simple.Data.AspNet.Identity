@@ -12,16 +12,16 @@ namespace Simple.Data.AspNet.Identity {
 
 
         public void Insert(IdentityUser user, string roleId) {
-            db.AspNetUserRole.Insert(UserId: user.Id, roleId: roleId);
+            db[DefaultTables.UserRoles].Insert(UserId: user.Id, roleId: roleId);
         }
 
         public void Delete(IdentityUser user, string roleId) {
-            db.AspNetUserRole.Delete(UserId: user.Id, RoleId: roleId);
+            db[DefaultTables.UserRoles].Delete(UserId: user.Id, RoleId: roleId);
         }
 
         public IEnumerable<IdentityRole> FindByUserId(string userId) {
-            return db.AspNetUserRole.FindAllByUserId(userId)
-                 .Select(db.AspNetUserRole.AspNetRole.Name, db.AspNetUserRole.RoleId);
+            return db[DefaultTables.UserRoles].FindAllByUserId(userId)
+                 .Select(db[DefaultTables.UserRoles][DefaultTables.Roles].Name, db.AspNetUserRole.RoleId);
         }
     }
 }

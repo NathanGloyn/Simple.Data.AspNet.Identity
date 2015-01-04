@@ -27,12 +27,12 @@ namespace Simple.Data.AspNet.Identity
         }
 
         /// <summary>
-        /// User ID
+        /// Users ID
         /// </summary>
         public string Id { get; set; }
 
         /// <summary>
-        /// User's name
+        /// Users's name
         /// </summary>
         public string UserName { get; set; }
 

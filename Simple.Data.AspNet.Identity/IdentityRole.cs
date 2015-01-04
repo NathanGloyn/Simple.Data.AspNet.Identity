@@ -10,7 +10,7 @@ namespace Simple.Data.AspNet.Identity {
     public class IdentityRole : IRole
     {
         /// <summary>
-        /// Default constructor for Role 
+        /// Default constructor for Roles 
         /// </summary>
         public IdentityRole()
         {
@@ -32,12 +32,12 @@ namespace Simple.Data.AspNet.Identity {
         }
 
         /// <summary>
-        /// Role ID
+        /// Roles ID
         /// </summary>
         public string Id { get; set; }
 
         /// <summary>
-        /// Role name
+        /// Roles name
         /// </summary>
         public string Name { get; set; }
     }

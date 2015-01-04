@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO.Pipes;
 
 namespace Simple.Data.AspNet.Identity {
     public class UserTable {
@@ -17,32 +16,32 @@ namespace Simple.Data.AspNet.Identity {
 
         public void Insert(IdentityUser user)
         {
-            db.AspNetUsers.Insert(user);
+            db[DefaultTables.Users].Insert(user);
         }
 
         public int Delete(string id) {
-            return db.AspNetUsers.DeleteById(id);
+            return db[DefaultTables.Users].DeleteById(id);
         }
 
         public IdentityUser GetUserById(string userId) 
         {
-            return db.AspNetUsers
+            return db[DefaultTables.Users]
                      .FindAllById(userId)
                      .FirstOrDefault();
         }
 
         public IdentityUser GetUserByName(string userName) {
-            return db.AspNetUsers
+            return db[DefaultTables.Users]
                      .FindAllByUserName(userName)
                      .FirstOrDefault();
         }
 
         public int Update(IdentityUser user) {
-            return db.AspNetUsers.UpdateById(user);
+            return db[DefaultTables.Users].UpdateById(user);
         }
 
         public IEnumerable<TUser> AllUsers<TUser>() {
-            return db.AspNetUsers.All();
+            return db[DefaultTables.Users].All();
         }
 
         public string GetPasswordHash(IdentityUser user) {

@@ -24,6 +24,7 @@ namespace Simple.Data.AspNet.Identity {
             Init(database);
         }
 
+
         private void Init(dynamic database)
         {
             _userTable = new UserTable(database);

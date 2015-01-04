@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Simple.Data.AspNet.Identity {
 
     /// <summary>
-    /// Class that represents the Role table in the MySQL Database
+    /// Class that represents the Roles table in the MySQL Database
     /// </summary>
     public class RoleTable
     {
@@ -26,29 +26,29 @@ namespace Simple.Data.AspNet.Identity {
         /// <returns></returns>
         public int Delete(string roleId)
         {
-            return db.AspNetRoles.DeleteById(roleId);
+            return db[DefaultTables.Roles].DeleteById(roleId);
         }
 
         /// <summary>
-        /// Inserts a new Role in the Roles table
+        /// Inserts a new Roles in the Roles table
         /// </summary>
-        /// <param name="roleName">The role's name</param>
+        /// <param name="role">The role's to insert</param>
         /// <returns></returns>
         public void Insert(IdentityRole role) 
         {
-            db.AspNetRoles.Insert(role);
+            db[DefaultTables.Roles].Insert(role);
         }
 
         /// <summary>
         /// Returns a role name given the roleId
         /// </summary>
         /// <param name="roleId">The role Id</param>
-        /// <returns>Role name</returns>
+        /// <returns>Roles name</returns>
         public string GetRoleName(string roleId)
         {
-            var result = db.AspNetRoles
+            var result = db[DefaultTables.Roles]
                      .FindAllById(roleId)
-                     .Select(db.AspNetRoles.Name)
+                     .Select(db[DefaultTables.Roles].Name)
                      .FirstOrDefault();
 
             if (result != null) 
@@ -62,13 +62,13 @@ namespace Simple.Data.AspNet.Identity {
         /// <summary>
         /// Returns the role Id given a role name
         /// </summary>
-        /// <param name="roleName">Role's name</param>
-        /// <returns>Role's Id</returns>
+        /// <param name="roleName">Roles's name</param>
+        /// <returns>Roles's Id</returns>
         public string GetRoleId(string roleName)
         {
-            var result = db.AspNetRoles
+            var result = db[DefaultTables.Roles]
                            .FindAllByName(roleName)
-                           .Select(db.AspNetRoles.Id)
+                           .Select(db[DefaultTables.Roles].Id)
                            .FirstOrDefault();
 
             if (result != null)
@@ -119,11 +119,11 @@ namespace Simple.Data.AspNet.Identity {
 
         public int Update(IdentityRole role) 
         {
-            return db.AspNetRoles.UpdateById(role);
+            return db[DefaultTables.Roles].UpdateById(role);
         }
 
         public IEnumerable<TRole> AllRoles<TRole>() {
-            return db.AspNetRoles.All().ToList<TRole>();
+            return db[DefaultTables.Roles].All().ToList<TRole>();
         }  
     }
 }
