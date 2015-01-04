@@ -95,6 +95,7 @@
     <Compile Include="User\When_deleting_user.cs" />
     <Compile Include="User\When_reading_users.cs" />
     <Compile Include="User\When_updating_user.cs" />
+    <Compile Include="When_creating_UserStore.cs" />
     <Compile Include="When_used_with_UserManager.cs" />
   </ItemGroup>
   <ItemGroup>

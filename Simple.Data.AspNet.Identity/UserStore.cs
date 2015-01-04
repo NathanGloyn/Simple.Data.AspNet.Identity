@@ -6,17 +6,30 @@ using Microsoft.AspNet.Identity;
 
 namespace Simple.Data.AspNet.Identity {
     public class UserStore<TUser>:IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser>, IUserPasswordStore<TUser> where TUser: IdentityUser {
-        
-        private readonly UserTable _userTable;
-        private readonly RoleTable _roleTable;
-        private readonly UserRoleTable _userRoleTable;
 
-        public UserStore() {
+        private UserTable _userTable;
+        private RoleTable _roleTable;
+        private UserRoleTable _userRoleTable;
+
+        public UserStore()
+        {
             dynamic database = Database.Open();
+            Init(database);
+        }
+
+
+        public UserStore(string connectionName)
+        {
+            dynamic database = Database.OpenNamedConnection(connectionName);
+            Init(database);
+        }
+
+        private void Init(dynamic database)
+        {
             _userTable = new UserTable(database);
             _roleTable = new RoleTable(database);
             _userRoleTable = new UserRoleTable(database);
-        }        
+        }
         
         public void Dispose() {
             // we can let normal GC behaviour to clean up
