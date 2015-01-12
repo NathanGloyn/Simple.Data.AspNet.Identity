@@ -68,6 +68,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Claims\When_adding_claim.cs" />
+    <Compile Include="Claims\When_getting_claims.cs" />
+    <Compile Include="Claims\When_removing_a_claim.cs" />
     <Compile Include="CustomTables\When_configuring_tables.cs" />
     <Compile Include="CustomTables\When_working_with_custom_table.cs" />
     <Compile Include="DatabaseHelper.cs" />

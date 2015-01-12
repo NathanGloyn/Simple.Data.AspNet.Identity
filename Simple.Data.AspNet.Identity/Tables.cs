@@ -2,16 +2,23 @@
 {
     public class Tables
     {
+        private const string DefaultUsersTable = "AspNetUsers";
+        private const string DefaultUserRolesTable = "AspNetUserRoles";
+        private const string DefaultRolesTable = "AspNetRoles";
+        private const string DefaultUserClaimsTable = "AspNetUserClaims";
+
         public Tables()
         {
-            Users = DefaultTables.Users;
-            Roles = DefaultTables.Roles;
-            UsersRoles = DefaultTables.UserRoles;
+            Users = DefaultUsersTable;
+            Roles = DefaultRolesTable;
+            UsersRoles = DefaultUserRolesTable;
+            UsersClaims = DefaultUserClaimsTable;
         }
 
         public string Users { get; private set; }
         public string Roles { get; private set; }
         public string UsersRoles { get; private set; }
+        public string UsersClaims { get; private set; }
 
         public Tables SetUsersTable(string tableName)
         {
@@ -31,11 +38,10 @@
             return this;
         }
 
-        private class DefaultTables
+        public Tables SetUserClaimsTable(string tableName)
         {
-            internal const string Users = "AspNetUsers";
-            internal const string UserRoles = "AspNetUserRoles";
-            internal const string Roles = "AspNetRoles";
+            UsersClaims = tableName;
+            return this;
         }
     }
 }

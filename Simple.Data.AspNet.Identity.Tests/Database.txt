@@ -181,7 +181,7 @@ BEGIN
 	SET NOCOUNT ON;
 
 	DELETE [dbo].[AspNetUserClaims];
-	DBCC CHECKIDENT ('dbo.AspNetUserClaims',RESEED, 0);
+	DBCC CHECKIDENT ('dbo.AspNetUserClaims',RESEED, 1);
 
 	DELETE [dbo].[AspNetUserRoles];
 	DELETE [dbo].[AspNetRoles];
@@ -189,7 +189,7 @@ BEGIN
 	DELETE [dbo].[AspNetUsers];
 
 	DELETE [dbo].[MyUserClaims];
-	DBCC CHECKIDENT ('dbo.MyUserClaims',RESEED, 0);
+	DBCC CHECKIDENT ('dbo.MyUserClaims',RESEED, 1);
 
 	DELETE [dbo].[MyUserRoles];
 	DELETE [dbo].[MyRoles];

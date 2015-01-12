@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Security.Claims;
 using Microsoft.AspNet.Identity;
 
 namespace Simple.Data.AspNet.Identity.Tests
@@ -37,6 +39,13 @@ namespace Simple.Data.AspNet.Identity.Tests
             string tableName = useCustomTables ? "MyUserRole" : "AspNetUserRole";
             Db[tableName].Insert(UserId: John_UserId, RoleId: Admin_RoleId);
             Db[tableName].Insert(UserId: Sue_UserId, RoleId: User_RoleId);
+        }
+
+        public static void AddClaimsToUsers(bool useCustomTables = false)
+        {
+            string tableName = useCustomTables ? "MyUserClaims" : "AspNetUserClaims";
+            Db[tableName].Insert(UserId: John_UserId, ClaimType: ClaimTypes.Email, ClaimValue: "John@test.com");
+            Db[tableName].Insert(UserId: John_UserId, ClaimType: ClaimTypes.Country, ClaimValue: "UK");
         }
     }
 }

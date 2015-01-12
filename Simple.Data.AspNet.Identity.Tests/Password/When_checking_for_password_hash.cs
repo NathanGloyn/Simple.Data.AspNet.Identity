@@ -19,7 +19,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Password
         [Test]
         public void Should_throw_argument_null_exception_if_user_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.SetPasswordHashAsync(null, ""));
+            Assert.Throws<ArgumentNullException>(() => _target.HasPasswordAsync(null));
         }
 
         [Test]

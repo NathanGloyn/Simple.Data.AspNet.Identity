@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 
 namespace Simple.Data.AspNet.Identity {
-    public class UserStore<TUser>:IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser>, IUserPasswordStore<TUser> where TUser: IdentityUser {
+    public class UserStore<TUser>:IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser>, IUserPasswordStore<TUser>, IUserClaimStore<TUser> where TUser: IdentityUser {
         
         private UserTable _userTable;
         private UserTable UsersTable
@@ -25,9 +26,15 @@ namespace Simple.Data.AspNet.Identity {
             get { return _userRoleTable ?? (_userRoleTable = new UserRoleTable(_database, Tables)); }
         }
 
+
+        private UserClaimsTable _userClaimsTable;
+        public UserClaimsTable UserClaimsTable
+        {
+            get { return _userClaimsTable ?? (_userClaimsTable = new UserClaimsTable(_database, Tables)); }
+        }
+
         private readonly dynamic _database ;
         
-
 
         public Tables Tables { get; set; }
 
@@ -239,6 +246,55 @@ namespace Simple.Data.AspNet.Identity {
             var result = !string.IsNullOrEmpty(UsersTable.GetPasswordHash(user));
 
             return Task.FromResult(result);
+        }
+
+        public Task<IList<Claim>> GetClaimsAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            var result = UserClaimsTable.FindByUserId(user.Id);
+
+            return Task.FromResult<IList<Claim>>(result.Claims.ToList());
+        }
+
+        public Task AddClaimAsync(TUser user, Claim claim)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            if (claim == null)
+            {
+                throw  new ArgumentNullException("claim");
+            }
+
+            var userClaim = new IdentityClaim(user.Id, claim);
+            UserClaimsTable.AddClaim(userClaim);
+
+            return Task.FromResult<object>(null);
+        }
+
+        public Task RemoveClaimAsync(TUser user, Claim claim)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            if (claim == null)
+            {
+                throw new ArgumentNullException("claim");
+            }
+
+            var userClaim = new IdentityClaim(user.Id, claim);
+
+            UserClaimsTable.RemoveClaim(userClaim);
+
+            return Task.FromResult<object>(null);
         }
     }
 }
