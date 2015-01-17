@@ -67,46 +67,55 @@ namespace Simple.Data.AspNet.Identity.Tests.CustomTables
             Assert.That(userRoles[0], Is.EqualTo("Admin"));            
         }
 
-        //[Test]
-        //public void Should_insert_user_into_custom_user_table()
-        //{
-        //    var newUser = new IdentityUser("Kathy");
+        [Test]
+        public void Should_insert_user_into_custom_user_table()
+        {
 
-        //    var task = _target.CreateAsync(newUser);
+            var target = new UserStore<IdentityUser>();
+            target.Tables.SetUsersTable("MyUsers");
 
-        //    task.Wait();
+            var newUser = new IdentityUser("Kathy");
 
-        //    var db = Database.Open();
+            var task = target.CreateAsync(newUser);
 
-        //    var user = (IdentityUser) db.MyUsers.FindAllByUserName("Kathy").FirstOrDefault();
+            task.Wait();
 
-        //    Assert.That(user, Is.Not.Null);
-        //    Assert.That(user.UserName, Is.EqualTo("Kathy"));
-        //}
+            var db = Database.Open();
 
-        //[Test]
-        //public void Should_update_user_in_MyUsers_table()
-        //{
-        //    var task = _target.FindByIdAsync(TestData.John_UserId);
+            var user = (IdentityUser)db.MyUsers.FindAllByUserName("Kathy").FirstOrDefault();
 
-        //    task.Wait();
+            Assert.That(user, Is.Not.Null);
+            Assert.That(user.UserName, Is.EqualTo("Kathy"));
+        }
 
-        //    var user = task.Result;
+        [Test]
+        public void Should_update_user_in_MyUsers_table()
+        {
+            TestData.AddUsers(useCustomTables: true);
 
-        //    user.PhoneNumber = "1234";
-        //    user.PhoneNumberConfirmed = true;
+            var target = new UserStore<IdentityUser>();
+            target.Tables.SetUsersTable("MyUsers");
 
-        //    var updateTask = _target.UpdateAsync(user);
+            var task = target.FindByIdAsync(TestData.John_UserId);
 
-        //    updateTask.Wait();
+            task.Wait();
 
-        //    var db = Database.Open();
+            var user = task.Result;
 
-        //    var updatedUser = (IdentityUser) db.MyUsers.FindAllById(TestData.John_UserId).First();
+            user.PhoneNumber = "1234";
+            user.PhoneNumberConfirmed = true;
 
-        //    Assert.That(updatedUser.PhoneNumber, Is.EqualTo("1234"));
-        //    Assert.That(updatedUser.PhoneNumberConfirmed, Is.True);
+            var updateTask = target.UpdateAsync(user);
 
-        //}
+            updateTask.Wait();
+
+            var db = Database.Open();
+
+            var updatedUser = (IdentityUser)db.MyUsers.FindAllById(TestData.John_UserId).First();
+
+            Assert.That(updatedUser.PhoneNumber, Is.EqualTo("1234"));
+            Assert.That(updatedUser.PhoneNumberConfirmed, Is.True);
+
+        }
     }
 }
