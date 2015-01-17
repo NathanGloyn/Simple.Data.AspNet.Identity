@@ -6,21 +6,27 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 
 namespace Simple.Data.AspNet.Identity {
-    public class UserStore<TUser>:IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser>, IUserPasswordStore<TUser>, IUserClaimStore<TUser>, IUserLockoutStore<TUser,string>, IUserLoginStore<TUser> where TUser: IdentityUser {
-        
+    public class UserStore<TUser> : IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser>,
+        IUserPasswordStore<TUser>, IUserClaimStore<TUser>, IUserLockoutStore<TUser, string>, IUserLoginStore<TUser>,
+        IUserSecurityStampStore<TUser> where TUser : IdentityUser
+    {
+
         private UserTable _userTable;
+
         private UserTable UsersTable
         {
             get { return _userTable ?? (_userTable = new UserTable(_database, Tables)); }
-        } 
+        }
 
         private RoleTable _roleTable;
+
         public RoleTable RolesTable
         {
             get { return _roleTable ?? (_roleTable = new RoleTable(_database, Tables)); }
         }
 
         private UserRoleTable _userRoleTable;
+
         public UserRoleTable UserRolesTable
         {
             get { return _userRoleTable ?? (_userRoleTable = new UserRoleTable(_database, Tables)); }
@@ -28,6 +34,7 @@ namespace Simple.Data.AspNet.Identity {
 
 
         private UserClaimsTable _userClaimsTable;
+
         public UserClaimsTable UserClaimsTable
         {
             get { return _userClaimsTable ?? (_userClaimsTable = new UserClaimsTable(_database, Tables)); }
@@ -37,11 +44,11 @@ namespace Simple.Data.AspNet.Identity {
 
         public UserLoginsTable UserLoginsTable
         {
-            get { return _userLoginsTable ?? (_userLoginsTable = new UserLoginsTable(_database, Tables)); } 
+            get { return _userLoginsTable ?? (_userLoginsTable = new UserLoginsTable(_database, Tables)); }
         }
 
-        private readonly dynamic _database ;
-        
+        private readonly dynamic _database;
+
 
         public Tables Tables { get; set; }
 
@@ -55,13 +62,13 @@ namespace Simple.Data.AspNet.Identity {
         public UserStore(Tables tables)
         {
             Tables = tables;
-            _database = Database.Open();       
+            _database = Database.Open();
         }
 
         public UserStore(string connectionName)
         {
-           _database = Database.OpenNamedConnection(connectionName);
-           Tables = new Tables();
+            _database = Database.OpenNamedConnection(connectionName);
+            Tables = new Tables();
         }
 
         public UserStore(string connectionName, Tables tables)
@@ -70,11 +77,13 @@ namespace Simple.Data.AspNet.Identity {
             Tables = tables;
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             // we can let normal GC behaviour to clean up
         }
 
-        public Task CreateAsync(TUser user) {
+        public Task CreateAsync(TUser user)
+        {
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -85,15 +94,16 @@ namespace Simple.Data.AspNet.Identity {
             return Task.FromResult<object>(null);
         }
 
-        public Task UpdateAsync(TUser user) {
+        public Task UpdateAsync(TUser user)
+        {
             if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
 
-            if (string.IsNullOrWhiteSpace(user.Id)) 
+            if (string.IsNullOrWhiteSpace(user.Id))
             {
-                throw new ArgumentException("Missing Id","user");    
+                throw new ArgumentException("Missing Id", "user");
             }
 
             UsersTable.Update(user);
@@ -101,7 +111,8 @@ namespace Simple.Data.AspNet.Identity {
             return Task.FromResult<object>(null);
         }
 
-        public Task DeleteAsync(TUser user) {
+        public Task DeleteAsync(TUser user)
+        {
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -117,19 +128,22 @@ namespace Simple.Data.AspNet.Identity {
             return Task.FromResult<Object>(null);
         }
 
-        public Task<TUser> FindByIdAsync(string userId) {
+        public Task<TUser> FindByIdAsync(string userId)
+        {
             var result = UsersTable.GetUserById(userId) as TUser;
 
-            return Task.FromResult(result);            
+            return Task.FromResult(result);
         }
 
-        public Task<TUser> FindByNameAsync(string userName) {
+        public Task<TUser> FindByNameAsync(string userName)
+        {
             var result = UsersTable.GetUserByName(userName) as TUser;
 
             return Task.FromResult(result);
         }
 
-        public IQueryable<TUser> Users {
+        public IQueryable<TUser> Users
+        {
             get { return UsersTable.AllUsers<TUser>().AsQueryable(); }
         }
 
@@ -147,9 +161,9 @@ namespace Simple.Data.AspNet.Identity {
 
             string roleId = RolesTable.GetRoleId(roleName);
 
-            if (string.IsNullOrEmpty(roleId)) 
+            if (string.IsNullOrEmpty(roleId))
             {
-                throw new ArgumentException("Unknown role: " + roleName);    
+                throw new ArgumentException("Unknown role: " + roleName);
             }
 
             if (!string.IsNullOrEmpty(roleId))
@@ -160,9 +174,10 @@ namespace Simple.Data.AspNet.Identity {
             return Task.FromResult<object>(null);
         }
 
-        public Task RemoveFromRoleAsync(TUser user, string roleName) 
+        public Task RemoveFromRoleAsync(TUser user, string roleName)
         {
-            if (user == null) {
+            if (user == null)
+            {
                 throw new ArgumentNullException("user");
             }
 
@@ -186,24 +201,29 @@ namespace Simple.Data.AspNet.Identity {
             return Task.FromResult<object>(null);
         }
 
-        public Task<IList<string>> GetRolesAsync(TUser user) {
-            if (user == null) {
+        public Task<IList<string>> GetRolesAsync(TUser user)
+        {
+            if (user == null)
+            {
                 throw new ArgumentNullException("user");
             }
 
             IList<string> roleNames = UserRolesTable.FindByUserId(user.Id)
-                                                    .Select(role => role.Name)
-                                                    .ToList();
+                .Select(role => role.Name)
+                .ToList();
 
             return Task.FromResult(roleNames);
         }
 
-        public Task<bool> IsInRoleAsync(TUser user, string roleName) {
-            if (user == null) {
+        public Task<bool> IsInRoleAsync(TUser user, string roleName)
+        {
+            if (user == null)
+            {
                 throw new ArgumentNullException("user");
             }
 
-            if (string.IsNullOrWhiteSpace(roleName)) {
+            if (string.IsNullOrWhiteSpace(roleName))
+            {
                 throw new ArgumentNullException("roleName");
             }
 
@@ -213,7 +233,7 @@ namespace Simple.Data.AspNet.Identity {
 
         }
 
-        public Task SetPasswordHashAsync(TUser user, string passwordHash) 
+        public Task SetPasswordHashAsync(TUser user, string passwordHash)
         {
             if (user == null)
             {
@@ -222,7 +242,7 @@ namespace Simple.Data.AspNet.Identity {
 
             if (string.IsNullOrWhiteSpace(passwordHash))
             {
-                throw new ArgumentException("Invalid password hash value","passwordHash");
+                throw new ArgumentException("Invalid password hash value", "passwordHash");
             }
 
             user.PasswordHash = passwordHash;
@@ -244,7 +264,8 @@ namespace Simple.Data.AspNet.Identity {
             return Task.FromResult(passwordHash);
         }
 
-        public Task<bool> HasPasswordAsync(TUser user) {
+        public Task<bool> HasPasswordAsync(TUser user)
+        {
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -276,7 +297,7 @@ namespace Simple.Data.AspNet.Identity {
 
             if (claim == null)
             {
-                throw  new ArgumentNullException("claim");
+                throw new ArgumentNullException("claim");
             }
 
             var userClaim = new IdentityClaim(user.Id, claim);
@@ -313,7 +334,11 @@ namespace Simple.Data.AspNet.Identity {
 
             var userDetail = UsersTable.GetUserById(user.Id);
 
-            return Task.FromResult(userDetail.LockoutEndDateUtc.HasValue ? new DateTimeOffset(DateTime.SpecifyKind(userDetail.LockoutEndDateUtc.Value,DateTimeKind.Utc)) : new DateTimeOffset());
+            return
+                Task.FromResult(
+                    userDetail.LockoutEndDateUtc.HasValue
+                        ? new DateTimeOffset(DateTime.SpecifyKind(userDetail.LockoutEndDateUtc.Value, DateTimeKind.Utc))
+                        : new DateTimeOffset());
         }
 
         public Task SetLockoutEndDateAsync(TUser user, DateTimeOffset lockoutEnd)
@@ -362,7 +387,7 @@ namespace Simple.Data.AspNet.Identity {
             {
                 throw new ArgumentNullException("user");
             }
-            
+
             return Task.FromResult(user.AccessFailedCount);
         }
 
@@ -446,6 +471,29 @@ namespace Simple.Data.AspNet.Identity {
             var user = UsersTable.GetUserById(userId) as TUser;
 
             return Task.FromResult(user);
+        }
+
+        public Task SetSecurityStampAsync(TUser user, string stamp)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.SecurityStamp = stamp;
+            UsersTable.Update(user);
+
+            return Task.FromResult(0);
+        }
+
+        public Task<string> GetSecurityStampAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            return Task.FromResult(user.SecurityStamp);
         }
     }
 }

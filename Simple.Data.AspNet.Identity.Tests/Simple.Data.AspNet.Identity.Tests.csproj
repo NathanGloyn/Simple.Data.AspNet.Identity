@@ -97,6 +97,8 @@
     <Compile Include="Roles\When_deleting_roles.cs" />
     <Compile Include="Roles\When_reading_roles.cs" />
     <Compile Include="Roles\When_updating_role.cs" />
+    <Compile Include="SecurityStamp\When_getting_security_stamp.cs" />
+    <Compile Include="SecurityStamp\When_setting_security_stamp.cs" />
     <Compile Include="SetupFixture.cs" />
     <Compile Include="TestData.cs" />
     <Compile Include="UserRoles\When_adding_role_for_a_user.cs" />
