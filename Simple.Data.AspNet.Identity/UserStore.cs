@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 
 namespace Simple.Data.AspNet.Identity {
-    public class UserStore<TUser>:IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser>, IUserPasswordStore<TUser>, IUserClaimStore<TUser>, IUserLockoutStore<TUser,string> where TUser: IdentityUser {
+    public class UserStore<TUser>:IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser>, IUserPasswordStore<TUser>, IUserClaimStore<TUser>, IUserLockoutStore<TUser,string>, IUserLoginStore<TUser> where TUser: IdentityUser {
         
         private UserTable _userTable;
         private UserTable UsersTable
@@ -31,6 +31,13 @@ namespace Simple.Data.AspNet.Identity {
         public UserClaimsTable UserClaimsTable
         {
             get { return _userClaimsTable ?? (_userClaimsTable = new UserClaimsTable(_database, Tables)); }
+        }
+
+        private UserLoginsTable _userLoginsTable;
+
+        public UserLoginsTable UserLoginsTable
+        {
+            get { return _userLoginsTable ?? (_userLoginsTable = new UserLoginsTable(_database, Tables)); } 
         }
 
         private readonly dynamic _database ;
@@ -380,6 +387,65 @@ namespace Simple.Data.AspNet.Identity {
             UsersTable.Update(user);
 
             return Task.FromResult<int>(0);
+        }
+
+        public Task AddLoginAsync(TUser user, UserLoginInfo login)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            if (login == null)
+            {
+                throw new ArgumentNullException("login");
+            }
+
+            UserLoginsTable.AddLogin(user, login);
+
+            return Task.FromResult<int>(0);
+        }
+
+        public Task RemoveLoginAsync(TUser user, UserLoginInfo login)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            if (login == null)
+            {
+                throw new ArgumentNullException("login");
+            }
+
+            UserLoginsTable.RemoveLogin(user, login);
+
+            return Task.FromResult<int>(0);
+        }
+
+        public Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            var logins = UserLoginsTable.GetLogins(user);
+
+            return Task.FromResult<IList<UserLoginInfo>>(logins);
+        }
+
+        public Task<TUser> FindAsync(UserLoginInfo login)
+        {
+            if (login == null)
+            {
+                throw new ArgumentNullException("login");
+            }
+
+            var userId = UserLoginsTable.FindUserId(login);
+            var user = UsersTable.GetUserById(userId) as TUser;
+
+            return Task.FromResult(user);
         }
     }
 }

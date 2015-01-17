@@ -58,12 +58,5 @@ namespace Simple.Data.AspNet.Identity {
             
             return string.Empty;
         }
-
-        public DateTime? GetLockoutEndDate(IdentityUser user)
-        {
-            var userDetails = GetUserById(user.Id);
-
-            return userDetails.LockoutEndDateUtc;
-        }
     }
 }

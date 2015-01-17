@@ -80,6 +80,10 @@
     <Compile Include="Lockout\When_getting_lockout_enddate.cs" />
     <Compile Include="Lockout\When_setting_lockout_date.cs" />
     <Compile Include="Lockout\When_setting_lockout_enabled.cs" />
+    <Compile Include="Login\When_adding_login.cs" />
+    <Compile Include="Login\When_finding_login.cs" />
+    <Compile Include="Login\When_getting_logins.cs" />
+    <Compile Include="Login\When_removing_login.cs" />
     <Compile Include="Password\When_checking_for_password_hash.cs" />
     <Compile Include="Password\When_getting_password_hash.cs" />
     <Compile Include="Password\When_setting_password_hash.cs" />

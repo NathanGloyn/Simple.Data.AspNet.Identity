@@ -8,6 +8,9 @@ namespace Simple.Data.AspNet.Identity.Tests.CustomTables
         private const string MyUsers = "MyUsers";
         private const string MyRoles = "MyRoles";
         private const string MyUserRoles = "MyUserRoles";
+        private const string MyUserClains = "MyUserClaims";
+        private const string MyUserLogins = "MyUserLogins";
+
         private Tables _target;
 
         [SetUp]
@@ -56,15 +59,33 @@ namespace Simple.Data.AspNet.Identity.Tests.CustomTables
         }
 
         [Test]
+        public void Should_set_userclaims_table()
+        {
+            _target.SetUserClaimsTable(MyUserClains);
+            Assert.That(_target.UsersClaims, Is.EqualTo(MyUserClains));
+        }
+
+        [Test]
+        public void Should_set__userLogins_table()
+        {
+            _target.SetUserLoginsTable(MyUserLogins);
+            Assert.That(_target.UsersLogins, Is.EqualTo(MyUserLogins));
+        }
+
+        [Test]
         public void Should_be_able_to_set_tables_fluently()
         {
             _target.SetUsersTable(MyUsers)
                    .SetRolesTable(MyRoles)
-                   .SetUserRolesTable(MyUserRoles);
+                   .SetUserRolesTable(MyUserRoles)
+                   .SetUserClaimsTable(MyUserClains)
+                   .SetUserLoginsTable(MyUserLogins);
 
             Assert.That(_target.Users, Is.EqualTo(MyUsers));
             Assert.That(_target.Roles, Is.EqualTo(MyRoles));
             Assert.That(_target.UsersRoles, Is.EqualTo(MyUserRoles));
+            Assert.That(_target.UsersClaims, Is.EqualTo(MyUserClains));
+            Assert.That(_target.UsersLogins, Is.EqualTo(MyUserLogins));
         }
     }
 }

@@ -65,5 +65,14 @@ namespace Simple.Data.AspNet.Identity.Tests
             Db[tableName].Insert(UserId: John_UserId, ClaimType: ClaimTypes.Email, ClaimValue: "John@test.com");
             Db[tableName].Insert(UserId: John_UserId, ClaimType: ClaimTypes.Country, ClaimValue: "UK");
         }
+
+        public static void AdLoginsForUsers(bool useCustomTables = false)
+        {
+            string tableName = useCustomTables ? "MyUserLogins" : "AspNetUserLogins";
+
+            Db[tableName].Insert(LoginProvider: "Google", ProviderKey: "123", UserId: John_UserId);
+            Db[tableName].Insert(LoginProvider: "GitHub", ProviderKey: "abc", UserId: John_UserId);
+            Db[tableName].Insert(LoginProvider: "Facebook", ProviderKey: "xyz-123", UserId: John_UserId);
+        }
     }
 }
