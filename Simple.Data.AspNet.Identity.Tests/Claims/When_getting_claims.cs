@@ -28,7 +28,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Claims
         [Test]
         public void Should_return_no_claims_for_user_that_has_none()
         {
-            var user = new IdentityUser { Id = TestData.Sue_UserId, UserName = "Sue" };
+            var user = TestData.GetTestUserSue();
 
             var task = _target.GetClaimsAsync(user);
 
@@ -42,7 +42,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Claims
         [Test]
         public void Should_return_claims_for_user()
         {
-            var user = new IdentityUser { Id = TestData.John_UserId, UserName = "John" };
+            var user = TestData.GetTestUserJohn();
 
             var task = _target.GetClaimsAsync(user);
 
@@ -57,7 +57,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Claims
         [Test]
         public void Should_return_expected_claims_for_user()
         {
-            var user = new IdentityUser { Id = TestData.John_UserId, UserName = "John" };
+            var user = TestData.GetTestUserJohn();
 
             var task = _target.GetClaimsAsync(user);
 

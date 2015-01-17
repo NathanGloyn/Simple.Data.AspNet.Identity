@@ -45,8 +45,7 @@ namespace Simple.Data.AspNet.Identity.Tests.User {
         public void Should_delete_user() {
             var userId = Guid.NewGuid().ToString();
 
-            var user = new IdentityUser("John");
-            user.Id = userId;                
+            var user = TestData.GetTestUserJohn();             
 
             dynamic db = Database.Open();
             db.AspNetUsers.Insert(user);

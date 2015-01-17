@@ -54,7 +54,7 @@ namespace Simple.Data.AspNet.Identity.Tests.CustomTables
                   .SetRolesTable("MyRoles")
                   .SetUserRolesTable("MyUserRoles");
 
-            var user = new IdentityUser { Id = TestData.John_UserId, UserName = "John" };
+            var user = TestData.GetTestUserJohn();
 
             var target = new UserStore<IdentityUser>(tables);
 

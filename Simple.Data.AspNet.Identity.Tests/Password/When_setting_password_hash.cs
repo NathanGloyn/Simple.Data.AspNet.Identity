@@ -25,7 +25,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Password
         [Test]
         public void Should_throw_argument_exception_if_password_hash_is_null_empty_or_whitespace([Values(null, "", " ")] string hash)
         {
-            var user = new IdentityUser { Id = TestData.John_UserId, UserName = "John" };
+            var user = TestData.GetTestUserJohn();
 
             Assert.Throws<ArgumentException>(() => _target.SetPasswordHashAsync(user, hash));
         }
@@ -33,7 +33,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Password
         [Test]
         public void Should_set_password_hash_correctly()
         {
-            var user = new IdentityUser { Id = TestData.John_UserId, UserName = "John" };
+            var user = TestData.GetTestUserJohn();
 
             var hashValue = Guid.NewGuid().ToString();
 

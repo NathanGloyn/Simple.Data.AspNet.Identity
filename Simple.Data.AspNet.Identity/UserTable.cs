@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Simple.Data.AspNet.Identity {
     public class UserTable {
@@ -56,6 +57,13 @@ namespace Simple.Data.AspNet.Identity {
             }
             
             return string.Empty;
+        }
+
+        public DateTime? GetLockoutEndDate(IdentityUser user)
+        {
+            var userDetails = GetUserById(user.Id);
+
+            return userDetails.LockoutEndDateUtc;
         }
     }
 }

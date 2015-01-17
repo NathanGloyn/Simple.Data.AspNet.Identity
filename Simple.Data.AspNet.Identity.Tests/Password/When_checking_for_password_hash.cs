@@ -37,7 +37,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Password
         [Test]
         public void Should_return_true_for_user_with_hash()
         {
-            var user = new IdentityUser { Id = TestData.John_UserId, UserName = "John" };
+            var user = TestData.GetTestUserJohn();
 
             var task = _target.HasPasswordAsync(user);
 

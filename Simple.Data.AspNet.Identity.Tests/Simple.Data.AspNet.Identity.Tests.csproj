@@ -75,6 +75,11 @@
     <Compile Include="CustomTables\When_working_with_custom_table.cs" />
     <Compile Include="DatabaseHelper.cs" />
     <Compile Include="DatabaseSupport.cs" />
+    <Compile Include="Lockout\When_checking_if_lockout_enabled.cs" />
+    <Compile Include="Lockout\When_dealing_with_counts.cs" />
+    <Compile Include="Lockout\When_getting_lockout_enddate.cs" />
+    <Compile Include="Lockout\When_setting_lockout_date.cs" />
+    <Compile Include="Lockout\When_setting_lockout_enabled.cs" />
     <Compile Include="Password\When_checking_for_password_hash.cs" />
     <Compile Include="Password\When_getting_password_hash.cs" />
     <Compile Include="Password\When_setting_password_hash.cs" />

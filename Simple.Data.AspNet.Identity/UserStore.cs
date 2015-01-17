@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 
 namespace Simple.Data.AspNet.Identity {
-    public class UserStore<TUser>:IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser>, IUserPasswordStore<TUser>, IUserClaimStore<TUser> where TUser: IdentityUser {
+    public class UserStore<TUser>:IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser>, IUserPasswordStore<TUser>, IUserClaimStore<TUser>, IUserLockoutStore<TUser,string> where TUser: IdentityUser {
         
         private UserTable _userTable;
         private UserTable UsersTable
         {
             get { return _userTable ?? (_userTable = new UserTable(_database, Tables)); }
-        }
+        } 
 
         private RoleTable _roleTable;
         public RoleTable RolesTable
@@ -295,6 +295,91 @@ namespace Simple.Data.AspNet.Identity {
             UserClaimsTable.RemoveClaim(userClaim);
 
             return Task.FromResult<object>(null);
+        }
+
+        public Task<DateTimeOffset> GetLockoutEndDateAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            var userDetail = UsersTable.GetUserById(user.Id);
+
+            return Task.FromResult(userDetail.LockoutEndDateUtc.HasValue ? new DateTimeOffset(DateTime.SpecifyKind(userDetail.LockoutEndDateUtc.Value,DateTimeKind.Utc)) : new DateTimeOffset());
+        }
+
+        public Task SetLockoutEndDateAsync(TUser user, DateTimeOffset lockoutEnd)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.LockoutEndDateUtc = lockoutEnd.UtcDateTime;
+
+            UsersTable.Update(user);
+
+            return Task.FromResult<int>(0);
+        }
+
+        public Task<int> IncrementAccessFailedCountAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.AccessFailedCount++;
+            UsersTable.Update(user);
+
+            return Task.FromResult(user.AccessFailedCount);
+        }
+
+        public Task ResetAccessFailedCountAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.AccessFailedCount = 0;
+            UsersTable.Update(user);
+
+            return Task.FromResult<int>(user.AccessFailedCount);
+        }
+
+        public Task<int> GetAccessFailedCountAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+            
+            return Task.FromResult(user.AccessFailedCount);
+        }
+
+        public Task<bool> GetLockoutEnabledAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            return Task.FromResult(user.LockoutEnabled);
+        }
+
+        public Task SetLockoutEnabledAsync(TUser user, bool enabled)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.LockoutEnabled = enabled;
+            UsersTable.Update(user);
+
+            return Task.FromResult<int>(0);
         }
     }
 }

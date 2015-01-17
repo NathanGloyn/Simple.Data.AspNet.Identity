@@ -36,7 +36,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Claims
         [Test]
         public void Should_remove_claim()
         {
-            var user = new IdentityUser { Id = TestData.John_UserId, UserName = "John" };
+            var user = TestData.GetTestUserJohn();
             var claimToDelete = new Claim(ClaimTypes.Email, "John@Test.com");
 
             var task = _target.RemoveClaimAsync(user, claimToDelete);

@@ -33,7 +33,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Claims
         [Test]
         public void Should_add_claim_for_specified_user()
         {
-            var user = new IdentityUser { Id = TestData.Sue_UserId, UserName = "Sue" };
+            var user = TestData.GetTestUserSue();
             var claim = new Claim(ClaimTypes.Email, "Sue@test.com");
 
             var task = _target.AddClaimAsync(user, claim);
