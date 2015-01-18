@@ -75,6 +75,11 @@
     <Compile Include="CustomTables\When_working_with_custom_table.cs" />
     <Compile Include="DatabaseHelper.cs" />
     <Compile Include="DatabaseSupport.cs" />
+    <Compile Include="Email\When_checking_email_confirmed.cs" />
+    <Compile Include="Email\When_finding_user_by_email.cs" />
+    <Compile Include="Email\When_getting_email.cs" />
+    <Compile Include="Email\When_setting_email.cs" />
+    <Compile Include="Email\When_setting_email_confirmed.cs" />
     <Compile Include="Lockout\When_checking_if_lockout_enabled.cs" />
     <Compile Include="Lockout\When_dealing_with_counts.cs" />
     <Compile Include="Lockout\When_getting_lockout_enddate.cs" />

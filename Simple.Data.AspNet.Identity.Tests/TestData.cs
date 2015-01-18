@@ -21,7 +21,7 @@ namespace Simple.Data.AspNet.Identity.Tests
 
         public static IdentityUser GetTestUserJohn()
         {
-            return new IdentityUser{Id = John_UserId, UserName = "John", Email = "John@test.com", SecurityStamp = "securityStamp"};
+            return new IdentityUser{Id = John_UserId, UserName = "John", Email = "John@test.com", SecurityStamp = "securityStamp", EmailConfirmed = true};
         }
 
         public static IdentityUser GetTestUserSue()

@@ -58,5 +58,10 @@ namespace Simple.Data.AspNet.Identity {
             
             return string.Empty;
         }
+
+        public IdentityUser GetUserByEmail(string email)
+        {
+            return _db[_tables.Users].FindAllByEmail(email).FirstOrDefault();
+        }
     }
 }

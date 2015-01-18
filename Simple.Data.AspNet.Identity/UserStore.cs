@@ -8,7 +8,7 @@ using Microsoft.AspNet.Identity;
 namespace Simple.Data.AspNet.Identity {
     public class UserStore<TUser> : IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser>,
         IUserPasswordStore<TUser>, IUserClaimStore<TUser>, IUserLockoutStore<TUser, string>, IUserLoginStore<TUser>,
-        IUserSecurityStampStore<TUser> where TUser : IdentityUser
+        IUserSecurityStampStore<TUser>, IUserEmailStore<TUser> where TUser : IdentityUser
     {
 
         private UserTable _userTable;
@@ -494,6 +494,57 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             return Task.FromResult(user.SecurityStamp);
+        }
+
+        public Task SetEmailAsync(TUser user, string email)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.Email = email;
+            UsersTable.Update(user);
+
+            return Task.FromResult(0);
+        }
+
+        public Task<string> GetEmailAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            return Task.FromResult(user.Email);
+        }
+
+        public Task<bool> GetEmailConfirmedAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            return Task.FromResult(user.EmailConfirmed);
+        }
+
+        public Task SetEmailConfirmedAsync(TUser user, bool confirmed)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.EmailConfirmed = confirmed;
+            UsersTable.Update(user);
+
+            return Task.FromResult(0);
+        }
+
+        public Task<TUser> FindByEmailAsync(string email)
+        {
+            return Task.FromResult(UsersTable.GetUserByEmail(email) as TUser);
         }
     }
 }
