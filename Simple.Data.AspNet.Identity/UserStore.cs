@@ -8,7 +8,7 @@ using Microsoft.AspNet.Identity;
 namespace Simple.Data.AspNet.Identity {
     public class UserStore<TUser> : IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser>,
         IUserPasswordStore<TUser>, IUserClaimStore<TUser>, IUserLockoutStore<TUser, string>, IUserLoginStore<TUser>,
-        IUserSecurityStampStore<TUser>, IUserEmailStore<TUser>, IUserPhoneNumberStore<TUser> where TUser : IdentityUser
+        IUserSecurityStampStore<TUser>, IUserEmailStore<TUser>, IUserPhoneNumberStore<TUser>, IUserTwoFactorStore<TUser,string> where TUser : IdentityUser
     {
 
         private UserTable _userTable;
@@ -591,6 +591,29 @@ namespace Simple.Data.AspNet.Identity {
             UsersTable.Update(user);
 
             return Task.FromResult(0);
+        }
+
+        public Task SetTwoFactorEnabledAsync(TUser user, bool enabled)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.TwoFactorEnabled = enabled;
+            UsersTable.Update(user);
+
+            return Task.FromResult(0);
+        }
+
+        public Task<bool> GetTwoFactorEnabledAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            return Task.FromResult(user.TwoFactorEnabled);
         }
     }
 }

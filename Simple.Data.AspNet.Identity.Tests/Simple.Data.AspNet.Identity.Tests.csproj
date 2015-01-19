@@ -110,6 +110,8 @@
     <Compile Include="SecurityStamp\When_setting_security_stamp.cs" />
     <Compile Include="SetupFixture.cs" />
     <Compile Include="TestData.cs" />
+    <Compile Include="TwoFactor\When_checking_two_factor_auth_enabled.cs" />
+    <Compile Include="TwoFactor\When_setting_two_factor_enabled.cs" />
     <Compile Include="UserRoles\When_adding_role_for_a_user.cs" />
     <Compile Include="UserRoles\When_checking_if_user_is_in_a_role.cs" />
     <Compile Include="UserRoles\When_getting_user_roles.cs" />
