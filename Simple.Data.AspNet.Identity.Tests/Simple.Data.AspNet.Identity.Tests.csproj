@@ -92,6 +92,10 @@
     <Compile Include="Password\When_checking_for_password_hash.cs" />
     <Compile Include="Password\When_getting_password_hash.cs" />
     <Compile Include="Password\When_setting_password_hash.cs" />
+    <Compile Include="Phone\When_checking_phone_confirmed.cs" />
+    <Compile Include="Phone\When_getting_phone_number.cs" />
+    <Compile Include="Phone\When_setting_phone_number.cs" />
+    <Compile Include="Phone\When_setting_phone_number_confirmed.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

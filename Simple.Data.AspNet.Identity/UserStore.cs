@@ -8,7 +8,7 @@ using Microsoft.AspNet.Identity;
 namespace Simple.Data.AspNet.Identity {
     public class UserStore<TUser> : IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser>,
         IUserPasswordStore<TUser>, IUserClaimStore<TUser>, IUserLockoutStore<TUser, string>, IUserLoginStore<TUser>,
-        IUserSecurityStampStore<TUser>, IUserEmailStore<TUser> where TUser : IdentityUser
+        IUserSecurityStampStore<TUser>, IUserEmailStore<TUser>, IUserPhoneNumberStore<TUser> where TUser : IdentityUser
     {
 
         private UserTable _userTable;
@@ -545,6 +545,52 @@ namespace Simple.Data.AspNet.Identity {
         public Task<TUser> FindByEmailAsync(string email)
         {
             return Task.FromResult(UsersTable.GetUserByEmail(email) as TUser);
+        }
+
+        public Task SetPhoneNumberAsync(TUser user, string phoneNumber)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.PhoneNumber = phoneNumber;
+            UsersTable.Update(user);
+
+            return Task.FromResult(0);
+        }
+
+        public Task<string> GetPhoneNumberAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            return Task.FromResult(user.PhoneNumber);
+        }
+
+        public Task<bool> GetPhoneNumberConfirmedAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            return Task.FromResult(user.PhoneNumberConfirmed);
+        }
+
+        public Task SetPhoneNumberConfirmedAsync(TUser user, bool confirmed)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.PhoneNumberConfirmed = confirmed;
+            UsersTable.Update(user);
+
+            return Task.FromResult(0);
         }
     }
 }
