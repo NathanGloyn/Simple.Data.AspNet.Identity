@@ -20,6 +20,13 @@ namespace Simple.Data.AspNet.Identity.Tests.Roles {
         }
 
         [Test]
+        public void Should_throw_ObjectDisposedException_if_disposed()
+        {
+            _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.UpdateAsync(new IdentityRole()));
+        }
+
+        [Test]
         public void Should_throw_ArgumentException_if_role_has_no_id()
         {
             var role = new IdentityRole();

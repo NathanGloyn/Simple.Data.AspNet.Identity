@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 
 namespace Simple.Data.AspNet.Identity.Tests.Claims
 {
@@ -23,6 +22,13 @@ namespace Simple.Data.AspNet.Identity.Tests.Claims
         public void Should_throw_argument_null_exception_if_user_is_null()
         {
             Assert.Throws<ArgumentNullException>(() => _target.RemoveClaimAsync(null, new Claim("", "")));
+        }
+
+        [Test]
+        public void Should_throw_ObjectDisposedException_if_disposed()
+        {
+            _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.RemoveClaimAsync(new IdentityUser(), new Claim("","")));
         }
 
         [Test]

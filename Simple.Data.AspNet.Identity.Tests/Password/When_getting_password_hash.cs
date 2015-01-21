@@ -23,6 +23,13 @@ namespace Simple.Data.AspNet.Identity.Tests.Password {
         }
 
         [Test]
+        public void Should_throw_ObjectDisposedException_if_disposed()
+        {
+            _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.GetPasswordHashAsync(new IdentityUser()));
+        }
+
+        [Test]
         public void Should_return_empty_string_for_invalid_user_id()
         {
             var user = new IdentityUser{Id = "abc"};

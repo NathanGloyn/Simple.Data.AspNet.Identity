@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using NUnit.Framework;
 
 namespace Simple.Data.AspNet.Identity.Tests.User {
@@ -14,6 +15,20 @@ namespace Simple.Data.AspNet.Identity.Tests.User {
             DatabaseHelper.Reset();
             TestData.AddUsers();
             _target = new UserStore<IdentityUser>();
+        }
+
+        [Test]
+        public void Should_throw_ObjectDisposedException_calling_FindByBName_and_disposed()
+        {
+            _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.FindByNameAsync(""));
+        }
+
+        [Test]
+        public void Should_throw_ObjectDisposedException_callaing_FindById_and_if_disposed()
+        {
+            _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.FindByIdAsync(""));
         }
 
         [Test]

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using Microsoft.AspNet.Identity;
 using NUnit.Framework;
 
@@ -19,6 +18,13 @@ namespace Simple.Data.AspNet.Identity.Tests.Login
             TestData.AddUsers();
             TestData.AdLoginsForUsers();
             _target = new UserStore<IdentityUser>();
+        }
+
+        [Test]
+        public void Should_throw_ObjectDisposedException_if_disposed()
+        {
+            _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.RemoveLoginAsync(new IdentityUser(), new UserLoginInfo("", "")));
         }
 
         [Test]

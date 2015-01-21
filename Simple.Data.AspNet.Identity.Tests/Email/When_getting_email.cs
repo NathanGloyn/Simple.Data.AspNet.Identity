@@ -7,6 +7,14 @@ namespace Simple.Data.AspNet.Identity.Tests.Email
     public class When_getting_email
     {
         [Test]
+        public void Should_throw_ObjectDisposedException_calling_FindByBName_and_disposed()
+        {
+            var target = new UserStore<IdentityUser>();
+            target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => target.GetEmailAsync(new IdentityUser()));
+        }
+
+        [Test]
         public void Should_throw_ArgumentNullException_if_user_is_null()
         {
             var target = new UserStore<IdentityUser>();

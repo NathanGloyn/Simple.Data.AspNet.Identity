@@ -24,6 +24,13 @@ namespace Simple.Data.AspNet.Identity.Tests.Claims
         }
 
         [Test]
+        public void Should_throw_ObjectDisposedException_if_disposed()
+        {
+            _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.AddClaimAsync(new IdentityUser(), new Claim("","")));
+        }
+
+        [Test]
            public void Should_throw_argument_null_exception_if_claim_is_null()
         {
             Assert.Throws<ArgumentNullException>(() => _target.AddClaimAsync(new IdentityUser(), null));

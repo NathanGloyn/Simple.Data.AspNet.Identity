@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using NUnit.Framework;
 
 namespace Simple.Data.AspNet.Identity.Tests.Roles {
@@ -13,6 +14,19 @@ namespace Simple.Data.AspNet.Identity.Tests.Roles {
             _target = new RoleStore<IdentityRole>();
         }
 
+        [Test]
+        public void Should_throw_ObjectDisposedException_calling_FindByBName_and_disposed()
+        {
+            _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.FindByNameAsync(""));
+        }
+
+        [Test]
+        public void Should_throw_ObjectDisposedException_callaing_FindById_and_if_disposed()
+        {
+            _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.FindByIdAsync(""));
+        }
 
         [Test]
         public void Should_return_null_for_unknown_role()

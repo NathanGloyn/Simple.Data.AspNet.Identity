@@ -21,6 +21,13 @@ namespace Simple.Data.AspNet.Identity.Tests.User {
         }
 
         [Test]
+        public void Should_throw_ObjectDisposedException_if_disposed()
+        {
+            _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.DeleteAsync(new IdentityUser()));
+        }
+
+        [Test]
         public void Should_throw_ArgumentException_if_user_id_is_missing() {
             var user = new IdentityUser();
             user.Id = null;

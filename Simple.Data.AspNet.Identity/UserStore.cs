@@ -11,6 +11,7 @@ namespace Simple.Data.AspNet.Identity {
         IUserSecurityStampStore<TUser>, IUserEmailStore<TUser>, IUserPhoneNumberStore<TUser>, IUserTwoFactorStore<TUser,string> where TUser : IdentityUser
     {
         private readonly Storage _storage;
+        private bool _disposed;
 
         public Tables Tables { get; set; }
 
@@ -29,11 +30,13 @@ namespace Simple.Data.AspNet.Identity {
 
         public void Dispose()
         {
-            // we can let normal GC behaviour to clean up
+            _disposed = true;
         }
 
         public Task CreateAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -46,6 +49,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task UpdateAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -63,6 +68,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task DeleteAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -80,6 +87,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<TUser> FindByIdAsync(string userId)
         {
+            ThrowIfDisposed();
+
             var result = _storage.UsersTable.GetUserById(userId) as TUser;
 
             return Task.FromResult(result);
@@ -87,6 +96,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<TUser> FindByNameAsync(string userName)
         {
+            ThrowIfDisposed();
+
             var result = _storage.UsersTable.GetUserByName(userName) as TUser;
 
             return Task.FromResult(result);
@@ -99,6 +110,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task AddToRoleAsync(TUser user, string roleName)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -126,6 +139,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task RemoveFromRoleAsync(TUser user, string roleName)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -153,6 +168,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<IList<string>> GetRolesAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -167,6 +184,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<bool> IsInRoleAsync(TUser user, string roleName)
         {
+            ThrowIfDisposed();   
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -185,6 +204,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task SetPasswordHashAsync(TUser user, string passwordHash)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -204,6 +225,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<string> GetPasswordHashAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -228,6 +251,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<IList<Claim>> GetClaimsAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -240,6 +265,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task AddClaimAsync(TUser user, Claim claim)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -258,6 +285,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task RemoveClaimAsync(TUser user, Claim claim)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -277,6 +306,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<DateTimeOffset> GetLockoutEndDateAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -293,6 +324,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task SetLockoutEndDateAsync(TUser user, DateTimeOffset lockoutEnd)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -307,6 +340,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<int> IncrementAccessFailedCountAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -320,6 +355,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task ResetAccessFailedCountAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -333,6 +370,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<int> GetAccessFailedCountAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -343,6 +382,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<bool> GetLockoutEnabledAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -353,6 +394,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task SetLockoutEnabledAsync(TUser user, bool enabled)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -366,6 +409,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task AddLoginAsync(TUser user, UserLoginInfo login)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -383,6 +428,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task RemoveLoginAsync(TUser user, UserLoginInfo login)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -400,6 +447,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -412,6 +461,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<TUser> FindAsync(UserLoginInfo login)
         {
+            ThrowIfDisposed();
+
             if (login == null)
             {
                 throw new ArgumentNullException("login");
@@ -425,6 +476,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task SetSecurityStampAsync(TUser user, string stamp)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -438,6 +491,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<string> GetSecurityStampAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -448,6 +503,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task SetEmailAsync(TUser user, string email)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -461,6 +518,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<string> GetEmailAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -471,6 +530,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<bool> GetEmailConfirmedAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -481,6 +542,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task SetEmailConfirmedAsync(TUser user, bool confirmed)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -494,11 +557,15 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<TUser> FindByEmailAsync(string email)
         {
+            ThrowIfDisposed();
+
             return Task.FromResult(_storage.UsersTable.GetUserByEmail(email) as TUser);
         }
 
         public Task SetPhoneNumberAsync(TUser user, string phoneNumber)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -512,6 +579,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<string> GetPhoneNumberAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -522,6 +591,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<bool> GetPhoneNumberConfirmedAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -532,6 +603,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task SetPhoneNumberConfirmedAsync(TUser user, bool confirmed)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -545,6 +618,8 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task SetTwoFactorEnabledAsync(TUser user, bool enabled)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
@@ -558,12 +633,22 @@ namespace Simple.Data.AspNet.Identity {
 
         public Task<bool> GetTwoFactorEnabledAsync(TUser user)
         {
+            ThrowIfDisposed();
+
             if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
 
             return Task.FromResult(user.TwoFactorEnabled);
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(GetType().Name);
+            }
         }
     }
 }

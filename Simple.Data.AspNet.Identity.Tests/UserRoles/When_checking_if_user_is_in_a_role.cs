@@ -22,6 +22,14 @@ namespace Simple.Data.AspNet.Identity.Tests.UserRoles {
                 Throws.Exception.TypeOf<ArgumentNullException>().With.Message.EqualTo("Value cannot be null.\r\nParameter name: user"));
         }
 
+        [Test]
+        public void Should_throw_ObjectDisposedException_if_disposed()
+        {
+            var target = new UserStore<IdentityUser>();
+            target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => target.IsInRoleAsync(new IdentityUser(), ""));
+        }
+
         [Test] 
         public void Should_throw_argument_null_exception_if_role_name_invalid([Values(null,""," ")] string roleName) {
             var target = new UserStore<IdentityUser>();

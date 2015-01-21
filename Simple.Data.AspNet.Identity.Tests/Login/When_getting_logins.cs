@@ -21,6 +21,13 @@ namespace Simple.Data.AspNet.Identity.Tests.Login
         }
 
         [Test]
+        public void Should_throw_ObjectDisposedException_if_disposed()
+        {
+            _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.GetLoginsAsync(new IdentityUser()));
+        }
+
+        [Test]
         public void Should_throw_ArgumentNullException_if_user_is_null()
         {
             Assert.Throws<ArgumentNullException>(() => _target.GetLoginsAsync(null));

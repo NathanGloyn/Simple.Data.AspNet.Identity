@@ -25,6 +25,14 @@ namespace Simple.Data.AspNet.Identity.Tests.Lockout
             Assert.Throws<ArgumentNullException>(() => _target.GetAccessFailedCountAsync(null));
         }
 
+        [Test]
+        public void Should_throw_ObjectDisposedException_if_disposed()
+        {
+           _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.IncrementAccessFailedCountAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(() => _target.ResetAccessFailedCountAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(() => _target.GetAccessFailedCountAsync(new IdentityUser()));
+        }
 
         [Test]
         public void Should_increment_the_failed_count()

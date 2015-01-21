@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace Simple.Data.AspNet.Identity.Tests.Email
 {
@@ -13,6 +14,13 @@ namespace Simple.Data.AspNet.Identity.Tests.Email
             DatabaseHelper.Reset();
             TestData.AddUsers();
             _target = new UserStore<IdentityUser>();
+        }
+
+        [Test]
+        public void Should_throw_ObjectDisposedException_calling_FindByBName_and_disposed()
+        {
+            _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.FindByEmailAsync(""));
         }
 
         [Test]

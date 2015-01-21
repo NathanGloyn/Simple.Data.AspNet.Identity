@@ -22,6 +22,13 @@ namespace Simple.Data.AspNet.Identity.Tests.UserRoles {
                 Throws.Exception.TypeOf<ArgumentNullException>().With.Message.EqualTo("Value cannot be null.\r\nParameter name: user"));
         }
 
+        [Test]
+        public void Should_throw_ObjectDisposedException_if_disposed()
+        {
+            var target = new UserStore<IdentityUser>();
+            target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => target.GetRolesAsync(new IdentityUser()));
+        }
 
         [Test]
         public void Should_return_empty_list_if_user_has_no_roles() 

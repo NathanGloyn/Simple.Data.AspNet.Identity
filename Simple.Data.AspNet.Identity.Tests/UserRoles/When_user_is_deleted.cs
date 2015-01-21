@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace Simple.Data.AspNet.Identity.Tests.UserRoles {
     [TestFixture]
@@ -12,6 +13,14 @@ namespace Simple.Data.AspNet.Identity.Tests.UserRoles {
             TestData.AddRoles();
             TestData.AddUsers();
             TestData.AddRolesToUsers();
+        }
+
+        [Test]
+        public void Should_throw_ObjectDisposedException_if_disposed()
+        {
+            var target = new UserStore<IdentityUser>();
+            target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => target.GetRolesAsync(new IdentityUser()));
         }
 
         [Test]

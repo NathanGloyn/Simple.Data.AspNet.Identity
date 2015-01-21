@@ -21,6 +21,13 @@ namespace Simple.Data.AspNet.Identity.Tests.User {
         }
 
         [Test]
+        public void Should_throw_ObjectDisposedException_if_disposed()
+        {
+            _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.CreateAsync(new IdentityUser()));
+        }
+
+        [Test]
         public void Should_insert_user_with_just_UserName() {
 
             var user = new IdentityUser("John");

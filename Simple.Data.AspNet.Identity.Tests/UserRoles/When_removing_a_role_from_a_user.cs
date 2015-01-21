@@ -23,6 +23,13 @@ namespace Simple.Data.AspNet.Identity.Tests.UserRoles {
         }
 
         [Test]
+        public void Should_throw_ObjectDisposedException_if_disposed()
+        {
+            _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.RemoveFromRoleAsync(new IdentityUser(),""));
+        }
+
+        [Test]
         public void Should_throw_ArgumentException_if_roleName_is_null([Values(null, "", " ")] string roleName)
         {
             var user = new IdentityUser();

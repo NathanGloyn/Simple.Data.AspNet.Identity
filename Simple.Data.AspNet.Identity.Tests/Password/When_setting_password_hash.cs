@@ -23,6 +23,13 @@ namespace Simple.Data.AspNet.Identity.Tests.Password
         }
 
         [Test]
+        public void Should_throw_ObjectDisposedException_if_disposed()
+        {
+            _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.SetPasswordHashAsync(new IdentityUser(), ""));
+        }
+
+        [Test]
         public void Should_throw_argument_exception_if_password_hash_is_null_empty_or_whitespace([Values(null, "", " ")] string hash)
         {
             var user = TestData.GetTestUserJohn();

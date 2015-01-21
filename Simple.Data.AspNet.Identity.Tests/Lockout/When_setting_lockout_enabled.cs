@@ -15,6 +15,14 @@ namespace Simple.Data.AspNet.Identity.Tests.Lockout
         }
 
         [Test]
+        public void Should_throw_ObjectDisposedException_if_disposed()
+        {
+            var target = new UserStore<IdentityUser>();
+            target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => target.SetLockoutEnabledAsync(new IdentityUser(), true));
+        }
+
+        [Test]
         public void Should_throw_ArgumentNullException_if_user_is_null()
         {
             var target = new UserStore<IdentityUser>();

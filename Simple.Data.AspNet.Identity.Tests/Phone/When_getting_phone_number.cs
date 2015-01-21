@@ -15,6 +15,14 @@ namespace Simple.Data.AspNet.Identity.Tests.Phone
         }
 
         [Test]
+        public void Should_throw_ObjectDisposedException_calling_FindByBName_and_disposed()
+        {
+            var target = new UserStore<IdentityUser>();
+            target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => target.GetPhoneNumberConfirmedAsync(new IdentityUser()));
+        }
+
+        [Test]
         public void Should_return_phone_number_for_user_supplied()
         {
             var target = new UserStore<IdentityUser>();

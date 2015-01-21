@@ -26,6 +26,13 @@ namespace Simple.Data.AspNet.Identity.Tests.Claims
         }
 
         [Test]
+        public void Should_throw_ObjectDisposedException_if_disposed()
+        {
+            _target.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => _target.GetClaimsAsync(new IdentityUser()));
+        }
+
+        [Test]
         public void Should_return_no_claims_for_user_that_has_none()
         {
             var user = TestData.GetTestUserSue();

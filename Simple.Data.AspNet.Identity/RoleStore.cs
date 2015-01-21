@@ -5,8 +5,10 @@ using Microsoft.AspNet.Identity;
 
 namespace Simple.Data.AspNet.Identity {
     
-    public class RoleStore<TRole>:IQueryableRoleStore<TRole> where TRole : IdentityRole 
+    public class RoleStore<TRole>:IQueryableRoleStore<TRole> where TRole : IdentityRole
     {
+        private bool _disposed;
+
         private readonly Storage _storage;
 
         public Tables Tables { get; set; }
@@ -23,11 +25,15 @@ namespace Simple.Data.AspNet.Identity {
             _storage = connectionName == null ? new Storage(Tables) : new Storage(connectionName, Tables);
         }
 
-        public void Dispose() {
-            // We let Simple.Data handle its own disposal
+        public void Dispose()
+        {
+            _disposed = true;
         }
 
         public Task CreateAsync(TRole role) {
+
+            ThrowIfDisposed();
+
             if (role == null) {
                 throw new ArgumentNullException("role");
             }
@@ -47,6 +53,9 @@ namespace Simple.Data.AspNet.Identity {
         }
 
         public Task UpdateAsync(TRole role) {
+
+            ThrowIfDisposed();
+
             if (role == null) 
             {
                 throw new ArgumentNullException("role");
@@ -68,6 +77,9 @@ namespace Simple.Data.AspNet.Identity {
         }
 
         public Task DeleteAsync(TRole role) {
+
+            ThrowIfDisposed();
+
             if (role == null) 
             {
                 throw new ArgumentNullException("role");
@@ -84,12 +96,18 @@ namespace Simple.Data.AspNet.Identity {
         }
 
         public Task<TRole> FindByIdAsync(string roleId) {
+
+            ThrowIfDisposed();
+
             var result = _storage.RolesTable.GetRoleById(roleId) as TRole;
 
             return Task.FromResult(result);
         }
 
         public Task<TRole> FindByNameAsync(string roleName) {
+
+            ThrowIfDisposed();
+
             var result = _storage.RolesTable.GetRoleByName(roleName) as TRole;
 
             return Task.FromResult(result);
@@ -97,6 +115,14 @@ namespace Simple.Data.AspNet.Identity {
 
         public IQueryable<TRole> Roles {
             get { return _storage.RolesTable.AllRoles<TRole>().AsQueryable(); }
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(GetType().Name);
+            }
         }
     }
 }
