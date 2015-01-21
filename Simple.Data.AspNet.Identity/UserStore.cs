@@ -10,71 +10,21 @@ namespace Simple.Data.AspNet.Identity {
         IUserPasswordStore<TUser>, IUserClaimStore<TUser>, IUserLockoutStore<TUser, string>, IUserLoginStore<TUser>,
         IUserSecurityStampStore<TUser>, IUserEmailStore<TUser>, IUserPhoneNumberStore<TUser>, IUserTwoFactorStore<TUser,string> where TUser : IdentityUser
     {
-
-        private UserTable _userTable;
-
-        private UserTable UsersTable
-        {
-            get { return _userTable ?? (_userTable = new UserTable(_database, Tables)); }
-        }
-
-        private RoleTable _roleTable;
-
-        public RoleTable RolesTable
-        {
-            get { return _roleTable ?? (_roleTable = new RoleTable(_database, Tables)); }
-        }
-
-        private UserRoleTable _userRoleTable;
-
-        public UserRoleTable UserRolesTable
-        {
-            get { return _userRoleTable ?? (_userRoleTable = new UserRoleTable(_database, Tables)); }
-        }
-
-
-        private UserClaimsTable _userClaimsTable;
-
-        public UserClaimsTable UserClaimsTable
-        {
-            get { return _userClaimsTable ?? (_userClaimsTable = new UserClaimsTable(_database, Tables)); }
-        }
-
-        private UserLoginsTable _userLoginsTable;
-
-        public UserLoginsTable UserLoginsTable
-        {
-            get { return _userLoginsTable ?? (_userLoginsTable = new UserLoginsTable(_database, Tables)); }
-        }
-
-        private readonly dynamic _database;
-
+        private readonly Storage _storage;
 
         public Tables Tables { get; set; }
 
 
-        public UserStore()
-        {
-            _database = Database.Open();
-            Tables = new Tables();
-        }
+        public UserStore():this(null, null) { }
 
-        public UserStore(Tables tables)
-        {
-            Tables = tables;
-            _database = Database.Open();
-        }
+        public UserStore(Tables tables):this(null, tables) { }
 
-        public UserStore(string connectionName)
-        {
-            _database = Database.OpenNamedConnection(connectionName);
-            Tables = new Tables();
-        }
+        public UserStore(string connectionName):this(connectionName, null) { }
 
         public UserStore(string connectionName, Tables tables)
         {
-            _database = Database.OpenNamedConnection(connectionName);
-            Tables = tables;
+            Tables = tables ?? new Tables();
+            _storage = connectionName == null ? new Storage(Tables) : new Storage(connectionName, Tables);
         }
 
         public void Dispose()
@@ -89,7 +39,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            UsersTable.Insert(user);
+            _storage.UsersTable.Insert(user);
 
             return Task.FromResult<object>(null);
         }
@@ -106,7 +56,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentException("Missing Id", "user");
             }
 
-            UsersTable.Update(user);
+            _storage.UsersTable.Update(user);
 
             return Task.FromResult<object>(null);
         }
@@ -123,28 +73,28 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentException("Missing user Id");
             }
 
-            UsersTable.Delete(user.Id);
+            _storage.UsersTable.Delete(user.Id);
 
             return Task.FromResult<Object>(null);
         }
 
         public Task<TUser> FindByIdAsync(string userId)
         {
-            var result = UsersTable.GetUserById(userId) as TUser;
+            var result = _storage.UsersTable.GetUserById(userId) as TUser;
 
             return Task.FromResult(result);
         }
 
         public Task<TUser> FindByNameAsync(string userName)
         {
-            var result = UsersTable.GetUserByName(userName) as TUser;
+            var result = _storage.UsersTable.GetUserByName(userName) as TUser;
 
             return Task.FromResult(result);
         }
 
         public IQueryable<TUser> Users
         {
-            get { return UsersTable.AllUsers<TUser>().AsQueryable(); }
+            get { return _storage.UsersTable.AllUsers<TUser>().AsQueryable(); }
         }
 
         public Task AddToRoleAsync(TUser user, string roleName)
@@ -159,7 +109,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentException("Argument cannot be null or empty: roleName.");
             }
 
-            string roleId = RolesTable.GetRoleId(roleName);
+            string roleId = _storage.RolesTable.GetRoleId(roleName);
 
             if (string.IsNullOrEmpty(roleId))
             {
@@ -168,7 +118,7 @@ namespace Simple.Data.AspNet.Identity {
 
             if (!string.IsNullOrEmpty(roleId))
             {
-                UserRolesTable.Insert(user, roleId);
+                _storage.UserRolesTable.Insert(user, roleId);
             }
 
             return Task.FromResult<object>(null);
@@ -186,7 +136,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentException("Argument cannot be null or empty: roleName.");
             }
 
-            string roleId = RolesTable.GetRoleId(roleName);
+            string roleId = _storage.RolesTable.GetRoleId(roleName);
 
             if (string.IsNullOrEmpty(roleId))
             {
@@ -195,7 +145,7 @@ namespace Simple.Data.AspNet.Identity {
 
             if (!string.IsNullOrEmpty(roleId))
             {
-                UserRolesTable.Delete(user, roleId);
+                _storage.UserRolesTable.Delete(user, roleId);
             }
 
             return Task.FromResult<object>(null);
@@ -208,7 +158,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            IList<string> roleNames = UserRolesTable.FindByUserId(user.Id)
+            IList<string> roleNames = _storage.UserRolesTable.FindByUserId(user.Id)
                 .Select(role => role.Name)
                 .ToList();
 
@@ -227,7 +177,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("roleName");
             }
 
-            var userRoles = UserRolesTable.FindByUserId(user.Id);
+            var userRoles = _storage.UserRolesTable.FindByUserId(user.Id);
 
             return Task.FromResult(userRoles.Any(x => x.Name == roleName));
 
@@ -247,7 +197,7 @@ namespace Simple.Data.AspNet.Identity {
 
             user.PasswordHash = passwordHash;
 
-            UsersTable.Update(user);
+            _storage.UsersTable.Update(user);
 
             return Task.FromResult<object>(null);
         }
@@ -259,7 +209,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            string passwordHash = UsersTable.GetPasswordHash(user);
+            string passwordHash = _storage.UsersTable.GetPasswordHash(user);
 
             return Task.FromResult(passwordHash);
         }
@@ -271,7 +221,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            var result = !string.IsNullOrEmpty(UsersTable.GetPasswordHash(user));
+            var result = !string.IsNullOrEmpty(_storage.UsersTable.GetPasswordHash(user));
 
             return Task.FromResult(result);
         }
@@ -283,7 +233,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            var result = UserClaimsTable.FindByUserId(user.Id);
+            var result = _storage.UserClaimsTable.FindByUserId(user.Id);
 
             return Task.FromResult<IList<Claim>>(result.Claims.ToList());
         }
@@ -301,7 +251,7 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             var userClaim = new IdentityClaim(user.Id, claim);
-            UserClaimsTable.AddClaim(userClaim);
+            _storage.UserClaimsTable.AddClaim(userClaim);
 
             return Task.FromResult<object>(null);
         }
@@ -320,7 +270,7 @@ namespace Simple.Data.AspNet.Identity {
 
             var userClaim = new IdentityClaim(user.Id, claim);
 
-            UserClaimsTable.RemoveClaim(userClaim);
+            _storage.UserClaimsTable.RemoveClaim(userClaim);
 
             return Task.FromResult<object>(null);
         }
@@ -332,7 +282,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            var userDetail = UsersTable.GetUserById(user.Id);
+            var userDetail = _storage.UsersTable.GetUserById(user.Id);
 
             return
                 Task.FromResult(
@@ -350,7 +300,7 @@ namespace Simple.Data.AspNet.Identity {
 
             user.LockoutEndDateUtc = lockoutEnd.UtcDateTime;
 
-            UsersTable.Update(user);
+            _storage.UsersTable.Update(user);
 
             return Task.FromResult<int>(0);
         }
@@ -363,7 +313,7 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             user.AccessFailedCount++;
-            UsersTable.Update(user);
+            _storage.UsersTable.Update(user);
 
             return Task.FromResult(user.AccessFailedCount);
         }
@@ -376,7 +326,7 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             user.AccessFailedCount = 0;
-            UsersTable.Update(user);
+            _storage.UsersTable.Update(user);
 
             return Task.FromResult<int>(user.AccessFailedCount);
         }
@@ -409,7 +359,7 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             user.LockoutEnabled = enabled;
-            UsersTable.Update(user);
+            _storage.UsersTable.Update(user);
 
             return Task.FromResult<int>(0);
         }
@@ -426,7 +376,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("login");
             }
 
-            UserLoginsTable.AddLogin(user, login);
+            _storage.UserLoginsTable.AddLogin(user, login);
 
             return Task.FromResult<int>(0);
         }
@@ -443,7 +393,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("login");
             }
 
-            UserLoginsTable.RemoveLogin(user, login);
+            _storage.UserLoginsTable.RemoveLogin(user, login);
 
             return Task.FromResult<int>(0);
         }
@@ -455,7 +405,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            var logins = UserLoginsTable.GetLogins(user);
+            var logins = _storage.UserLoginsTable.GetLogins(user);
 
             return Task.FromResult<IList<UserLoginInfo>>(logins);
         }
@@ -467,8 +417,8 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("login");
             }
 
-            var userId = UserLoginsTable.FindUserId(login);
-            var user = UsersTable.GetUserById(userId) as TUser;
+            var userId = _storage.UserLoginsTable.FindUserId(login);
+            var user = _storage.UsersTable.GetUserById(userId) as TUser;
 
             return Task.FromResult(user);
         }
@@ -481,7 +431,7 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             user.SecurityStamp = stamp;
-            UsersTable.Update(user);
+            _storage.UsersTable.Update(user);
 
             return Task.FromResult(0);
         }
@@ -504,7 +454,7 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             user.Email = email;
-            UsersTable.Update(user);
+            _storage.UsersTable.Update(user);
 
             return Task.FromResult(0);
         }
@@ -537,14 +487,14 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             user.EmailConfirmed = confirmed;
-            UsersTable.Update(user);
+            _storage.UsersTable.Update(user);
 
             return Task.FromResult(0);
         }
 
         public Task<TUser> FindByEmailAsync(string email)
         {
-            return Task.FromResult(UsersTable.GetUserByEmail(email) as TUser);
+            return Task.FromResult(_storage.UsersTable.GetUserByEmail(email) as TUser);
         }
 
         public Task SetPhoneNumberAsync(TUser user, string phoneNumber)
@@ -555,7 +505,7 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             user.PhoneNumber = phoneNumber;
-            UsersTable.Update(user);
+            _storage.UsersTable.Update(user);
 
             return Task.FromResult(0);
         }
@@ -588,7 +538,7 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             user.PhoneNumberConfirmed = confirmed;
-            UsersTable.Update(user);
+            _storage.UsersTable.Update(user);
 
             return Task.FromResult(0);
         }
@@ -601,7 +551,7 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             user.TwoFactorEnabled = enabled;
-            UsersTable.Update(user);
+            _storage.UsersTable.Update(user);
 
             return Task.FromResult(0);
         }
