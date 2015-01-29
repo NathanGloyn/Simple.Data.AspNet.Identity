@@ -32,3 +32,4 @@ packages/
 !*nuget
 !NuGet.exe
 *.DotSettings
+*.nupkg
