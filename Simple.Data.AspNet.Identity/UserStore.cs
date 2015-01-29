@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 
 namespace Simple.Data.AspNet.Identity {
-    public class UserStore<TUser> : IQueryableUserStore<TUser>, IUserStore<TUser>, IUserRoleStore<TUser>,
+    public class UserStore<TUser> : IUserStore<TUser>, IUserRoleStore<TUser>,
         IUserPasswordStore<TUser>, IUserClaimStore<TUser>, IUserLockoutStore<TUser, string>, IUserLoginStore<TUser>,
         IUserSecurityStampStore<TUser>, IUserEmailStore<TUser>, IUserPhoneNumberStore<TUser>, IUserTwoFactorStore<TUser,string> where TUser : IdentityUser
     {
@@ -101,11 +101,6 @@ namespace Simple.Data.AspNet.Identity {
             var result = _storage.UsersTable.GetUserByName(userName) as TUser;
 
             return Task.FromResult(result);
-        }
-
-        public IQueryable<TUser> Users
-        {
-            get { return _storage.UsersTable.AllUsers<TUser>().AsQueryable(); }
         }
 
         public Task AddToRoleAsync(TUser user, string roleName)

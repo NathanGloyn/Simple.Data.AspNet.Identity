@@ -67,17 +67,5 @@ namespace Simple.Data.AspNet.Identity.Tests.Roles {
 
             Assert.That(task.Result.Name, Is.EqualTo("Admin"));              
         }
-
-        [Test]
-        public void Should_be_able_to_read_roles() {
-            Assert.That(_target.Roles.Count(), Is.EqualTo(2));
-        }
-
-        [Test]
-        public void Should_be_able_to_query_roles() {
-            var role =_target.Roles.SingleOrDefault(r => r.Name == "Admin");
-            Assert.That(role, Is.Not.Null);
-            Assert.That(role.Name, Is.EqualTo("Admin"));
-        }
     }
 }

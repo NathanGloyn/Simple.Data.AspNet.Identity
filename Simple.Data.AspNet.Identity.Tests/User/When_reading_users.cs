@@ -70,13 +70,5 @@ namespace Simple.Data.AspNet.Identity.Tests.User {
             Assert.That(task.Result.UserName, Is.EqualTo("Sue"));
             Assert.That(task.Result.Email, Is.EqualTo("Sue@test.com"));
         }
-
-        [Test]
-        public void Should_be_able_to_query_users() {
-            var user = _target.Users.SingleOrDefault(u => u.UserName == "Sue");
-
-            Assert.That(user, Is.Not.Null);
-            Assert.That(user.UserName, Is.EqualTo("Sue"));
-        }
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.AspNet.Identity;
 
 namespace Simple.Data.AspNet.Identity {
     
-    public class RoleStore<TRole>:IQueryableRoleStore<TRole> where TRole : IdentityRole
+    public class RoleStore<TRole>:IRoleStore<TRole> where TRole : IdentityRole
     {
         private bool _disposed;
 
@@ -111,10 +111,6 @@ namespace Simple.Data.AspNet.Identity {
             var result = _storage.RolesTable.GetRoleByName(roleName) as TRole;
 
             return Task.FromResult(result);
-        }
-
-        public IQueryable<TRole> Roles {
-            get { return _storage.RolesTable.AllRoles<TRole>().AsQueryable(); }
         }
 
         private void ThrowIfDisposed()
