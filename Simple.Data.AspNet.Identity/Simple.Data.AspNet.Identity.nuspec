@@ -1,15 +1,19 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Simple.Data.Microsoft.AspNet.Identity</id>
-    <version>0.0.0.1</version>
+    <id>$id$</id>
+    <version>$version$</version>
     <title>Simple.Data ASP.NET Identity</title>
-    <authors>N Gloyn</authors>
+    <authors>$author$</authors>
     <owners>N Gloyn</owners>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>	
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Implementation of Microsoft Asp.Net identity using Simple.Data for database access</description>
+    <description>$description$</description>
     <releaseNotes>Initial Version</releaseNotes>
     <copyright>Copyright 2014</copyright>
-    <tags>Simple.Data</tags>
+    <tags>simple.data aspnet Identity Membership</tags>
   </metadata>
+  <files>
+	<file src="..\IdentityTables.sql" target="" />
+  </files>	  
 </package>

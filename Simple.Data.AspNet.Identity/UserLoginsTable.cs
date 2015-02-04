@@ -3,16 +3,11 @@ using Microsoft.AspNet.Identity;
 
 namespace Simple.Data.AspNet.Identity
 {
-    public class UserLoginsTable
+    class UserLoginsTable
     {
         private readonly dynamic _db;
         private readonly Tables _tables;
 
-        /// <summary>
-        /// Constructor that takes a Simple.Data database instance 
-        /// </summary>
-        /// <param name="db">Simple.Data database object</param>
-        /// <param name="tables">Name of the user logins table</param>
         public UserLoginsTable(dynamic db, Tables tables) 
         {
             _db = db;

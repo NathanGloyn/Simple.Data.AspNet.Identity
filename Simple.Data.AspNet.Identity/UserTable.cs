@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Simple.Data.AspNet.Identity {
-    public class UserTable {
-
+namespace Simple.Data.AspNet.Identity 
+{
+    class UserTable 
+    {
         private readonly dynamic _db;
         private readonly Tables _tables;
 
-        /// <summary>
-        /// Constructor that takes a MySQLDatabase instance 
-        /// </summary>
-        /// <param name="db">Simple.Data database object</param>
-        /// <param name="userTable">Name of the users table</param>
         public UserTable(dynamic db, Tables userTable) 
         {
             _db = db;

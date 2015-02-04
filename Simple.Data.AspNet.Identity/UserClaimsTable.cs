@@ -3,7 +3,7 @@ using System.Security.Claims;
 
 namespace Simple.Data.AspNet.Identity
 {
-    public class UserClaimsTable
+    class UserClaimsTable
     {
         private readonly dynamic _db;
         private readonly Tables _tables;

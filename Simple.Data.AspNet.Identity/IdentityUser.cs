@@ -20,7 +20,7 @@ namespace Simple.Data.AspNet.Identity
         /// <summary>
         /// Constructor that takes user name as argument
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="userName">String holding name of user</param>
         public IdentityUser(string userName): this()
         {
             UserName = userName;

@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Simple.Data.AspNet.Identity {
-    public class UserRoleTable 
+namespace Simple.Data.AspNet.Identity 
+{
+    class UserRoleTable 
     {
         private readonly dynamic _db;
         private readonly Tables _tables;

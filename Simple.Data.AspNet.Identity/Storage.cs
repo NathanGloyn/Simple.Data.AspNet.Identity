@@ -1,6 +1,7 @@
 namespace Simple.Data.AspNet.Identity
 {
-    public class Storage {
+    class Storage 
+    {
         private readonly Tables _tables;
         private UserTable _userTable;
         private RoleTable _roleTable;
@@ -10,8 +11,17 @@ namespace Simple.Data.AspNet.Identity
 
         private readonly dynamic _database;
 
+        /// <summary>
+        /// Constructor that takes table details to use
+        /// </summary>
+        /// <param name="tables"><see cref="Tables"/> holding table details</param>
         public Storage(Tables tables):this(null,tables) { }
 
+        /// <summary>
+        /// Constructor that takes connection name and table details to use
+        /// </summary>
+        /// <param name="connectionName">Name of connection string in config</param>
+        /// <param name="tables"><see cref="Tables"/> holding table details</param>
         public Storage(string connectionName, Tables tables)
         {
             _tables = tables;

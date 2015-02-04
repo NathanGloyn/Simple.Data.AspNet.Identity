@@ -1,11 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Data.AspNet.Identity", "Simple.Data.AspNet.Identity\Simple.Data.AspNet.Identity.csproj", "{A1D60B05-AB33-4890-AAE7-BB3977906CA0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Data.AspNet.Identity.Tests", "Simple.Data.AspNet.Identity.Tests\Simple.Data.AspNet.Identity.Tests.csproj", "{53B97335-4F38-4AB2-AB93-E97E9496F862}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F0196897-2344-4831-B2AD-0CE417E1F170}"
+	ProjectSection(SolutionItems) = preProject
+		IdentityTables.sql = IdentityTables.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

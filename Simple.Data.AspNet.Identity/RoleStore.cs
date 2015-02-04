@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 
@@ -11,25 +10,66 @@ namespace Simple.Data.AspNet.Identity {
 
         private readonly Storage _storage;
 
+        /// <summary>
+        /// <see cref="Tables"/> object with names of tables used by identity
+        /// </summary>
         public Tables Tables { get; set; }
 
+        /// <summary>
+        /// Default constructor that initializes a new
+        /// instance using the default Simple.Data connection string
+        /// from properties.
+        /// 
+        /// Uses the default AspNet Identity table names
+        /// </summary>
         public RoleStore():this(null,null) { }
 
+        /// <summary>
+        /// Constructor that initializes a new
+        /// instance using the named connection string
+        /// 
+        /// Uses the default AspNet Identity table names
+        /// </summary>
         public RoleStore(string connectionName) :this(connectionName,null) { }
 
+        /// <summary>
+        /// Constructor that initializes a new
+        /// instance using the default Simple.Data connection string
+        /// from properties.
+        /// 
+        /// Uses the table names provided
+        /// </summary>
         public RoleStore(Tables tables) :this(null,tables) { }
 
+        /// <summary>
+        /// Constructor that initializes a new
+        /// instance using the named connection string
+        /// 
+        /// Uses the table names provided
+        /// </summary>
         public RoleStore(string connectionName, Tables tables)
         {
             Tables = tables ?? new Tables();
             _storage = connectionName == null ? new Storage(Tables) : new Storage(connectionName, Tables);
         }
 
+        /// <summary>
+        /// Releases all resources used by the current instance of the <see cref="RoleStore"/>
+        /// </summary>
         public void Dispose()
         {
             _disposed = true;
         }
 
+        /// <summary>
+        /// Inserts a role.
+        /// </summary>
+        /// <param name="role">The Role to be inserted</param>
+        /// <returns>The task representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="role"/> is null</exception>
+        /// <exception cref="ArgumentException">If Role.Id is null, empty or whitespace</exception>
+        /// <exception cref="ArgumentException">If Role.Name is null, empty or whitespace</exception>
+        /// <exception cref="ObjectDisposedException">If <see cref="RoleStore"/> has been disposed</exception>
         public Task CreateAsync(TRole role) {
 
             ThrowIfDisposed();
@@ -52,6 +92,15 @@ namespace Simple.Data.AspNet.Identity {
             return Task.FromResult<object>(null);
         }
 
+        /// <summary>
+        /// Updates a role.
+        /// </summary>
+        /// <param name="role">The Role to update</param>
+        /// <returns>The task representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="role"/> is null</exception>
+        /// <exception cref="ArgumentException">If Role.Id is null, empty or whitespace</exception>
+        /// <exception cref="ArgumentException">If Role.Name is null, empty or whitespace</exception>
+        /// <exception cref="ObjectDisposedException">If <see cref="RoleStore"/> has been disposed</exception>
         public Task UpdateAsync(TRole role) {
 
             ThrowIfDisposed();
@@ -76,6 +125,14 @@ namespace Simple.Data.AspNet.Identity {
             return Task.FromResult<object>(null);
         }
 
+        /// <summary>
+        /// Deletes a role.
+        /// </summary>
+        /// <param name="role">The role to delete</param>
+        /// <returns>The task representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="role"/> is null</exception>
+        /// <exception cref="ArgumentException">If Role.Id is null, empty or whitespace</exception>
+        /// <exception cref="ObjectDisposedException">If <see cref="RoleStore"/> has been disposed</exception>
         public Task DeleteAsync(TRole role) {
 
             ThrowIfDisposed();
@@ -95,6 +152,12 @@ namespace Simple.Data.AspNet.Identity {
             return Task.FromResult<Object>(null);
         }
 
+        /// <summary>
+        /// Finds a role by using the specified identifier.
+        /// </summary>
+        /// <param name="roleId">The role identifier.</param>
+        /// <returns>The task representing the asynchronous operation</returns>
+        /// <exception cref="ObjectDisposedException">If <see cref="RoleStore"/> has been disposed</exception>
         public Task<TRole> FindByIdAsync(string roleId) {
 
             ThrowIfDisposed();
@@ -104,6 +167,12 @@ namespace Simple.Data.AspNet.Identity {
             return Task.FromResult(result);
         }
 
+        /// <summary>
+        /// Finds a role by its name
+        /// </summary>
+        /// <param name="roleName">The role name.</param>
+        /// <returns>The task representing the asynchronous operation</returns>
+        /// <exception cref="ObjectDisposedException">If <see cref="RoleStore"/> has been disposed</exception>
         public Task<TRole> FindByNameAsync(string roleName) {
 
             ThrowIfDisposed();
