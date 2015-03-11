@@ -3,7 +3,7 @@
 namespace Simple.Data.AspNet.Identity 
 {
 
-    class RoleTable
+    class RoleTable<TRole> where TRole : IdentityRole, new()
     {
         private readonly dynamic _db;
         private readonly Tables _tables;
@@ -19,7 +19,7 @@ namespace Simple.Data.AspNet.Identity
             return _db[_tables.Roles].DeleteById(roleId);
         }
 
-        public void Insert(IdentityRole role) 
+        public void Insert(TRole role) 
         {
             _db[_tables.Roles].Insert(role);
         }
@@ -55,35 +55,39 @@ namespace Simple.Data.AspNet.Identity
             return null;
         }
 
-        public IdentityRole GetRoleById(string roleId) 
+        public TRole GetRoleById(string roleId) 
         {
 
             var roleName = GetRoleName(roleId);
-            IdentityRole role = null;
+            TRole role = null;
 
             if (roleName != null)
             {
-                role = new IdentityRole(roleName, roleId);
+                role = new TRole();
+                role.Id = roleId;
+                role.Name = roleName;
             }
 
             return role;
 
         }
 
-        public IdentityRole GetRoleByName(string roleName)
+        public TRole GetRoleByName(string roleName)
         {
             var roleId = GetRoleId(roleName);
-            IdentityRole role = null;
+            TRole role = null;
 
             if (roleId != null)
             {
-                role = new IdentityRole(roleName, roleId);
+                role = new TRole();
+                role.Id = roleId;
+                role.Name = role.Name;
             }
 
             return role;
         }
 
-        public int Update(IdentityRole role) 
+        public int Update(TRole role) 
         {
             return _db[_tables.Roles].UpdateById(role);
         }

@@ -1,10 +1,11 @@
 namespace Simple.Data.AspNet.Identity
 {
-    class Storage 
+    class Storage<TUser, TRole> where TUser : IdentityUser 
+                                where TRole : IdentityRole, new()
     {
         private readonly Tables _tables;
-        private UserTable _userTable;
-        private RoleTable _roleTable;
+        private UserTable<TUser> _userTable;
+        private RoleTable<TRole> _roleTable;
         private UserRoleTable _userRoleTable;
         private UserClaimsTable _userClaimsTable;
         private UserLoginsTable _userLoginsTable;
@@ -28,14 +29,14 @@ namespace Simple.Data.AspNet.Identity
             _database = connectionName == null ? Database.Open() : Database.OpenNamedConnection(connectionName);
         }
 
-        public UserTable UsersTable
+        public UserTable<TUser> UsersTable
         {
-            get { return _userTable ?? (_userTable = new UserTable(_database, _tables)); }
+            get { return _userTable ?? (_userTable = new UserTable<TUser>(_database, _tables)); }
         }
 
-        public RoleTable RolesTable
+        public RoleTable<TRole> RolesTable
         {
-            get { return _roleTable ?? (_roleTable = new RoleTable(_database, _tables)); }
+            get { return _roleTable ?? (_roleTable = new RoleTable<TRole>(_database, _tables)); }
         }
 
         public UserRoleTable UserRolesTable

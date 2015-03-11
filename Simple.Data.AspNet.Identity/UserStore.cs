@@ -14,7 +14,7 @@ namespace Simple.Data.AspNet.Identity {
         IUserPasswordStore<TUser>, IUserClaimStore<TUser>, IUserLockoutStore<TUser, string>, IUserLoginStore<TUser>,
         IUserSecurityStampStore<TUser>, IUserEmailStore<TUser>, IUserPhoneNumberStore<TUser>, IUserTwoFactorStore<TUser,string> where TUser : IdentityUser
     {
-        private readonly Storage _storage;
+        private readonly Storage<TUser,IdentityRole> _storage;
         private bool _disposed;
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Simple.Data.AspNet.Identity {
         public UserStore(string connectionName, Tables tables)
         {
             Tables = tables ?? new Tables();
-            _storage = connectionName == null ? new Storage(Tables) : new Storage(connectionName, Tables);
+            _storage = connectionName == null ? new Storage<TUser,IdentityRole>(Tables) : new Storage<TUser,IdentityRole>(connectionName, Tables);
         }
 
         /// <summary>

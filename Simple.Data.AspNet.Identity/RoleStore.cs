@@ -4,11 +4,11 @@ using Microsoft.AspNet.Identity;
 
 namespace Simple.Data.AspNet.Identity {
     
-    public class RoleStore<TRole>:IRoleStore<TRole> where TRole : IdentityRole
+    public class RoleStore<TRole>: IRoleStore<TRole> where TRole : IdentityRole, new()
     {
         private bool _disposed;
 
-        private readonly Storage _storage;
+        private readonly Storage<IdentityUser,TRole> _storage;
 
         /// <summary>
         /// <see cref="Tables"/> object with names of tables used by identity
@@ -50,7 +50,7 @@ namespace Simple.Data.AspNet.Identity {
         public RoleStore(string connectionName, Tables tables)
         {
             Tables = tables ?? new Tables();
-            _storage = connectionName == null ? new Storage(Tables) : new Storage(connectionName, Tables);
+            _storage = connectionName == null ? new Storage<IdentityUser, TRole>(Tables) : new Storage<IdentityUser, TRole>(connectionName, Tables);
         }
 
         /// <summary>

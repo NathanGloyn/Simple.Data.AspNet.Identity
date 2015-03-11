@@ -7,7 +7,7 @@ namespace Simple.Data.AspNet.Identity
     /// Class that implements the ASP.NET Identity
     /// IUser interface 
     /// </summary>
-    public class IdentityUser : IUser 
+    public class IdentityUser : IUser<string> 
     {
         /// <summary>
         /// Default constructor 

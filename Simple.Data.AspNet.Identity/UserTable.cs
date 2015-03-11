@@ -2,7 +2,7 @@
 
 namespace Simple.Data.AspNet.Identity 
 {
-    class UserTable 
+    class UserTable<TUser> where TUser : IdentityUser
     {
         private readonly dynamic _db;
         private readonly Tables _tables;
@@ -13,7 +13,7 @@ namespace Simple.Data.AspNet.Identity
             _tables = userTable;
         }
 
-        public void Insert(IdentityUser user)
+        public void Insert(TUser user)
         {
             _db[_tables.Users].Insert(user);
         }
@@ -22,28 +22,28 @@ namespace Simple.Data.AspNet.Identity
             return _db[_tables.Users].DeleteById(id);
         }
 
-        public IdentityUser GetUserById(string userId) 
+        public TUser GetUserById(string userId) 
         {
             return _db[_tables.Users]
                      .FindAllById(userId)
                      .FirstOrDefault();
         }
 
-        public IdentityUser GetUserByName(string userName) {
+        public TUser GetUserByName(string userName) {
             return _db[_tables.Users]
                      .FindAllByUserName(userName)
                      .FirstOrDefault();
         }
 
-        public int Update(IdentityUser user) {
+        public int Update(TUser user) {
             return _db[_tables.Users].UpdateById(user);
         }
 
-        public IEnumerable<TUser> AllUsers<TUser>() {
+        public IEnumerable<TUser> AllUsers() {
             return _db[_tables.Users].All();
         }
 
-        public string GetPasswordHash(IdentityUser user) {
+        public string GetPasswordHash(TUser user) {
             var userDetails =  GetUserById(user.Id);
 
             if (userDetails != null)
@@ -54,7 +54,7 @@ namespace Simple.Data.AspNet.Identity
             return string.Empty;
         }
 
-        public IdentityUser GetUserByEmail(string email)
+        public TUser GetUserByEmail(string email)
         {
             return _db[_tables.Users].FindAllByEmail(email).FirstOrDefault();
         }
