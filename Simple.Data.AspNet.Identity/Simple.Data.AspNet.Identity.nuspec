@@ -6,7 +6,8 @@
     <title>Simple.Data ASP.NET Identity</title>
     <authors>$author$</authors>
     <owners>N Gloyn</owners>
-    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>	
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+	<projectUrl>https://github.com/NathanGloyn/Simple.Data.AspNet.Identity</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>Initial Version</releaseNotes>
