@@ -70,7 +70,7 @@ namespace Simple.Data.AspNet.Identity {
         /// <exception cref="ArgumentException">If Role.Id is null, empty or whitespace</exception>
         /// <exception cref="ArgumentException">If Role.Name is null, empty or whitespace</exception>
         /// <exception cref="ObjectDisposedException">If <see cref="RoleStore"/> has been disposed</exception>
-        public Task CreateAsync(TRole role) {
+        public async Task CreateAsync(TRole role) {
 
             ThrowIfDisposed();
 
@@ -87,9 +87,8 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentException("Missing role Name");    
             }
 
-            _storage.RolesTable.Insert(role);
+            await _storage.RolesTable.Insert(role);
 
-            return Task.FromResult<object>(null);
         }
 
         /// <summary>
@@ -158,13 +157,13 @@ namespace Simple.Data.AspNet.Identity {
         /// <param name="roleId">The role identifier.</param>
         /// <returns>The task representing the asynchronous operation</returns>
         /// <exception cref="ObjectDisposedException">If <see cref="RoleStore"/> has been disposed</exception>
-        public Task<TRole> FindByIdAsync(string roleId) {
+        public async Task<TRole> FindByIdAsync(string roleId) {
 
             ThrowIfDisposed();
 
-            var result = _storage.RolesTable.GetRoleById(roleId) as TRole;
+            var result = await _storage.RolesTable.GetRoleById(roleId) as TRole;
 
-            return Task.FromResult(result);
+            return result;
         }
 
         /// <summary>
@@ -173,13 +172,13 @@ namespace Simple.Data.AspNet.Identity {
         /// <param name="roleName">The role name.</param>
         /// <returns>The task representing the asynchronous operation</returns>
         /// <exception cref="ObjectDisposedException">If <see cref="RoleStore"/> has been disposed</exception>
-        public Task<TRole> FindByNameAsync(string roleName) {
+        public async Task<TRole> FindByNameAsync(string roleName) {
 
             ThrowIfDisposed();
 
-            var result = _storage.RolesTable.GetRoleByName(roleName) as TRole;
+            var result = await _storage.RolesTable.GetRoleByName(roleName) as TRole;
 
-            return Task.FromResult(result);
+            return result;
         }
 
         private void ThrowIfDisposed()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Simple.Data.AspNet.Identity 
 {
@@ -14,19 +15,19 @@ namespace Simple.Data.AspNet.Identity
             _tables = tables;
         }
 
-        public int Delete(string roleId)
+        public async Task<int> Delete(string roleId)
         {
-            return _db[_tables.Roles].DeleteById(roleId);
+            return await _db[_tables.Roles].DeleteById(roleId);
         }
 
-        public void Insert(TRole role) 
+        public async Task Insert(TRole role) 
         {
-            _db[_tables.Roles].Insert(role);
+            await _db[_tables.Roles].Insert(role);
         }
 
-        public string GetRoleName(string roleId)
+        public async Task<string> GetRoleName(string roleId)
         {
-            var result = _db[_tables.Roles]
+            var result = await _db[_tables.Roles]
                      .FindAllById(roleId)
                      .Select(_db[_tables.Roles].Name)
                      .FirstOrDefault();
@@ -40,9 +41,9 @@ namespace Simple.Data.AspNet.Identity
         }
 
 
-        public string GetRoleId(string roleName)
+        public async Task<string> GetRoleId(string roleName)
         {
-            var result = _db[_tables.Roles]
+            var result = await _db[_tables.Roles]
                            .FindAllByName(roleName)
                            .Select(_db[_tables.Roles].Id)
                            .FirstOrDefault();
@@ -55,10 +56,10 @@ namespace Simple.Data.AspNet.Identity
             return null;
         }
 
-        public TRole GetRoleById(string roleId) 
+        public async Task<TRole> GetRoleById(string roleId) 
         {
 
-            var roleName = GetRoleName(roleId);
+            var roleName = await GetRoleName(roleId);
             TRole role = null;
 
             if (roleName != null)
@@ -72,9 +73,9 @@ namespace Simple.Data.AspNet.Identity
 
         }
 
-        public TRole GetRoleByName(string roleName)
+        public async Task<TRole> GetRoleByName(string roleName)
         {
-            var roleId = GetRoleId(roleName);
+            var roleId = await GetRoleId(roleName);
             TRole role = null;
 
             if (roleId != null)
@@ -87,9 +88,9 @@ namespace Simple.Data.AspNet.Identity
             return role;
         }
 
-        public int Update(TRole role) 
+        public async Task<int> Update(TRole role) 
         {
-            return _db[_tables.Roles].UpdateById(role);
+            return await _db[_tables.Roles].UpdateById(role);
         }
     }
 }

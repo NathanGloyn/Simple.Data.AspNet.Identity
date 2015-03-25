@@ -20,54 +20,47 @@ namespace Simple.Data.AspNet.Identity.Tests.User {
         public void Should_throw_ObjectDisposedException_calling_FindByBName_and_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.FindByNameAsync(""));
+            Assert.Throws<ObjectDisposedException>( async () => await _target.FindByNameAsync(""));
         }
 
         [Test]
         public void Should_throw_ObjectDisposedException_callaing_FindById_and_if_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.FindByIdAsync(""));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.FindByIdAsync(""));
         }
 
         [Test]
-        public void Should_return_null_for_unknown_user_id() {
-            var task = _target.FindByIdAsync("8133EE09-58ED-4710-A572-2A77DA5E5562");
+        public async void Should_return_null_for_unknown_user_id() {
+            var identityUser = await _target.FindByIdAsync("8133EE09-58ED-4710-A572-2A77DA5E5562");
 
-            task.Wait();
-
-            Assert.That(task.Result, Is.Null);
+            Assert.That(identityUser, Is.Null);
         }
         
         [Test]
-        public void Should_find_user_by_Id() {
-            var task = _target.FindByIdAsync("4455E2EB-B7F8-4C17-940B-199922298A02");
+        public async void Should_find_user_by_Id() {
+            var identityUser = await _target.FindByIdAsync("4455E2EB-B7F8-4C17-940B-199922298A02");
 
-            task.Wait();
 
-            Assert.That(task.Result.UserName, Is.EqualTo("John"));
-            Assert.That(task.Result.Email, Is.EqualTo("John@test.com"));
+            Assert.That(identityUser.UserName, Is.EqualTo("John"));
+            Assert.That(identityUser.Email, Is.EqualTo("John@test.com"));
         }
 
         [Test]
-        public void Should_return_null_for_unknown_user_name() 
+        public async void Should_return_null_for_unknown_user_name() 
         {
-            var task = _target.FindByNameAsync("Jack");
+            var identityUser = await _target.FindByNameAsync("Jack");
 
-            task.Wait();
-
-            Assert.That(task.Result, Is.Null);
+            Assert.That(identityUser, Is.Null);
         }
 
         [Test]
-        public void Should_find_user_by_name()
+        public async  void Should_find_user_by_name()
         {
-            var task = _target.FindByNameAsync("Sue");
+            var identityUser = await _target.FindByNameAsync("Sue");
 
-            task.Wait();
-
-            Assert.That(task.Result.UserName, Is.EqualTo("Sue"));
-            Assert.That(task.Result.Email, Is.EqualTo("Sue@test.com"));
+            Assert.That(identityUser.UserName, Is.EqualTo("Sue"));
+            Assert.That(identityUser.Email, Is.EqualTo("Sue@test.com"));
         }
     }
 }

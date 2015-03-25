@@ -67,10 +67,6 @@ namespace Simple.Data.AspNet.Identity.Tests
                 _targetServer.KillAllProcesses(_sqlConnection.Database);
                 _targetServer.KillDatabase(name);
             }
-            else
-            {
-                throw new InvalidOperationException("Unable to drop the dabase as unable to find a database called " + name);
-            }
         }
 
 

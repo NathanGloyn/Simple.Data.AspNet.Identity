@@ -49,19 +49,18 @@ namespace Simple.Data.AspNet.Identity.Tests.User {
         }
 
         [Test]
-        public void Should_delete_user() {
+        public async void Should_delete_user() {
             var userId = Guid.NewGuid().ToString();
 
             var user = TestData.GetTestUserJohn();             
 
             dynamic db = Database.Open();
-            db.AspNetUsers.Insert(user);
+            await db.AspNetUsers.Insert(user);
 
-            var task = _target.DeleteAsync(user);
+            await _target.DeleteAsync(user);
 
-            task.Wait();
 
-            Assert.That(db.AspNetUsers.FindAllById(userId).SingleOrDefault(), Is.Null);
+            Assert.That(await db.AspNetUsers.FindAllById(userId).SingleOrDefault(), Is.Null);
         }
 
     }

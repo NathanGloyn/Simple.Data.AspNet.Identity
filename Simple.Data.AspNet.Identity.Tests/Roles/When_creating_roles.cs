@@ -15,14 +15,14 @@ namespace Simple.Data.AspNet.Identity.Tests.Roles {
         [Test]
         public void Should_throw_ArgumentNullException_if_role_is_null() 
         {
-            Assert.Throws<ArgumentNullException>(() => _target.CreateAsync(null));
+            Assert.Throws<ArgumentNullException>(async () => await _target.CreateAsync(null));
         }
 
         [Test]
         public void Should_throw_ObjectDisposedException_if_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.CreateAsync(new IdentityRole()));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.CreateAsync(new IdentityRole()));
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Roles {
             role.Id = "";
 
             Assert.That(
-                () => _target.CreateAsync(role),
+                async () => await _target.CreateAsync(role),
                 Throws.Exception.TypeOf<ArgumentException>().With.Message.EqualTo("Missing role Id"));
 
         }
@@ -43,7 +43,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Roles {
             var role = new IdentityRole();
 
             Assert.That(
-                () => _target.CreateAsync(role),
+                async () => await _target.CreateAsync(role),
                 Throws.Exception.TypeOf<ArgumentException>().With.Message.EqualTo("Missing role Name"));
         }
 
@@ -58,13 +58,13 @@ namespace Simple.Data.AspNet.Identity.Tests.Roles {
         }
 
         [Test]
-        public void Should_throw_exception_on_create_if_role_with_same_id_already_exists() {
+        public async void Should_throw_exception_on_create_if_role_with_same_id_already_exists() {
             dynamic db = Database.Open();
 
-            db.AspNetRoles.Insert(Id: "57384BB3-3D5F-4183-A03D-77408D8F225B", Name: "Admin");
+            await db.AspNetRoles.Insert(Id: "57384BB3-3D5F-4183-A03D-77408D8F225B", Name: "Admin");
 
-            Assert.That(
-                () => _target.CreateAsync(new IdentityRole("Admin", "57384BB3-3D5F-4183-A03D-77408D8F225B")),
+            Assert.That( 
+                async () => await _target.CreateAsync(new IdentityRole("Admin", "57384BB3-3D5F-4183-A03D-77408D8F225B")),
                 Throws.Exception.TypeOf<Simple.Data.Ado.AdoAdapterException>()
                     .With.Message.Contains("Violation of PRIMARY KEY constraint 'PK_dbo.AspNetRole'. Cannot insert duplicate key in object 'dbo.AspNetRoles'. The duplicate key value is (57384BB3-3D5F-4183-A03D-77408D8F225B)"));
 

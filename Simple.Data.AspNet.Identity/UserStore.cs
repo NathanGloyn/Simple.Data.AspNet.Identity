@@ -137,13 +137,13 @@ namespace Simple.Data.AspNet.Identity {
         /// </summary>
         /// <param name="userId">The user identifier</param>
         /// <returns>Task whose result is the user; otherwise task with result null</returns>
-        public Task<TUser> FindByIdAsync(string userId)
+        public async Task<TUser> FindByIdAsync(string userId)
         {
             ThrowIfDisposed();
 
-            var result = _storage.UsersTable.GetUserById(userId) as TUser;
+            var result = await _storage.UsersTable.GetUserById(userId) as TUser;
 
-            return Task.FromResult(result);
+            return result;
         }
 
         /// <summary>
@@ -151,13 +151,13 @@ namespace Simple.Data.AspNet.Identity {
         /// </summary>
         /// <param name="userName">The user name</param>
         /// <returns>Task whose result is the user; otherwise task with result null</returns>
-        public Task<TUser> FindByNameAsync(string userName)
+        public async Task<TUser> FindByNameAsync(string userName)
         {
             ThrowIfDisposed();
 
-            var result = _storage.UsersTable.GetUserByName(userName) as TUser;
+            var result = await _storage.UsersTable.GetUserByName(userName) as TUser;
 
-            return Task.FromResult(result);
+            return result;
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace Simple.Data.AspNet.Identity {
         /// <param name="user">The user</param>
         /// <param name="roleName">Name of role</param>
         /// <returns>The task representing the asynchronous operation.</returns>
-        public Task AddToRoleAsync(TUser user, string roleName)
+        public async Task AddToRoleAsync(TUser user, string roleName)
         {
             ThrowIfDisposed();
 
@@ -180,7 +180,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentException("Argument cannot be null or empty: roleName.");
             }
 
-            string roleId = _storage.RolesTable.GetRoleId(roleName);
+            string roleId = await _storage.RolesTable.GetRoleId(roleName);
 
             if (string.IsNullOrEmpty(roleId))
             {
@@ -192,7 +192,6 @@ namespace Simple.Data.AspNet.Identity {
                 _storage.UserRolesTable.Insert(user, roleId);
             }
 
-            return Task.FromResult<object>(null);
         }
 
         /// <summary>
@@ -201,7 +200,7 @@ namespace Simple.Data.AspNet.Identity {
         /// <param name="user">The user</param>
         /// <param name="roleName">Name of the role</param>
         /// <returns>The task representing the asynchronous operation.</returns>
-        public Task RemoveFromRoleAsync(TUser user, string roleName)
+        public async Task RemoveFromRoleAsync(TUser user, string roleName)
         {
             ThrowIfDisposed();
 
@@ -215,7 +214,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentException("Argument cannot be null or empty: roleName.");
             }
 
-            string roleId = _storage.RolesTable.GetRoleId(roleName);
+            string roleId =  await _storage.RolesTable.GetRoleId(roleName);
 
             if (string.IsNullOrEmpty(roleId))
             {
@@ -226,8 +225,6 @@ namespace Simple.Data.AspNet.Identity {
             {
                 _storage.UserRolesTable.Delete(user, roleId);
             }
-
-            return Task.FromResult<object>(null);
         }
 
         /// <summary>

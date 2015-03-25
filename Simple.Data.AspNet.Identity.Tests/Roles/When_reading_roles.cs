@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using NUnit.Framework;
 
 namespace Simple.Data.AspNet.Identity.Tests.Roles {
@@ -18,54 +17,47 @@ namespace Simple.Data.AspNet.Identity.Tests.Roles {
         public void Should_throw_ObjectDisposedException_calling_FindByBName_and_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.FindByNameAsync(""));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.FindByNameAsync(""));
         }
 
         [Test]
         public void Should_throw_ObjectDisposedException_callaing_FindById_and_if_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.FindByIdAsync(""));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.FindByIdAsync(""));
         }
 
         [Test]
-        public void Should_return_null_for_unknown_role()
+        public async void Should_return_null_for_unknown_role()
         {
-            var task = _target.FindByNameAsync("non-existent role");
+            var identityRole = await _target.FindByNameAsync("non-existent role");
 
-            task.Wait();
-
-            Assert.That(task.Result, Is.Null);
+            Assert.That(identityRole, Is.Null);
         }
 
         [Test]
-        public void Should_return_null_for_unknown_role_id() 
+        public async void Should_return_null_for_unknown_role_id() 
         {
-            var task = _target.FindByIdAsync("123");
+            var identityRole = await _target.FindByIdAsync("123");
 
-            task.Wait();
-
-            Assert.That(task.Result, Is.Null);
+            Assert.That(identityRole, Is.Null);
         }
 
         [Test]
-        public void Should_return_role_based_on_role_name() {
+        public async void Should_return_role_based_on_role_name() {
             
-            var task = _target.FindByNameAsync("Admin");
+            var identityRole = await _target.FindByNameAsync("Admin");
 
-            task.Wait();
 
-            Assert.That(task.Result.Id, Is.EqualTo("57384BB3-3D5F-4183-A03D-77408D8F225B"));            
+            Assert.That(identityRole.Id, Is.EqualTo("57384BB3-3D5F-4183-A03D-77408D8F225B"));            
         }
 
         [Test]
-        public void Should_return_role_based_on_id() {
+        public async void Should_return_role_based_on_id() {
 
-            var task = _target.FindByIdAsync("57384BB3-3D5F-4183-A03D-77408D8F225B");
+            var role = await _target.FindByIdAsync("57384BB3-3D5F-4183-A03D-77408D8F225B");
 
-            task.Wait();
-
-            Assert.That(task.Result.Name, Is.EqualTo("Admin"));              
+            Assert.That(role.Name, Is.EqualTo("Admin"));              
         }
     }
 }

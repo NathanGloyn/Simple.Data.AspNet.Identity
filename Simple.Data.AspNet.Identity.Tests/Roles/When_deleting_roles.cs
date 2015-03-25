@@ -17,14 +17,14 @@ namespace Simple.Data.AspNet.Identity.Tests.Roles {
 
         [Test]
         public void Should_throw_ArgumentNullException_if_role_is_null() {
-            Assert.Throws<ArgumentNullException>(() => _target.DeleteAsync(null));
+            Assert.Throws<ArgumentNullException>(async () => await _target.DeleteAsync(null));
         }
 
         [Test]
         public void Should_throw_ObjectDisposedException_if_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.DeleteAsync(new IdentityRole()));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.DeleteAsync(new IdentityRole()));
         }
 
 
@@ -35,7 +35,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Roles {
             role.Id = "";
 
             Assert.That(
-                () => _target.DeleteAsync(role),
+                async () => await _target.DeleteAsync(role),
                 Throws.Exception.TypeOf<ArgumentException>().With.Message.EqualTo("Missing role Id"));
 
         }

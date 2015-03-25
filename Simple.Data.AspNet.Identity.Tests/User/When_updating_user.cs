@@ -38,22 +38,21 @@ namespace Simple.Data.AspNet.Identity.Tests.User {
         }
 
         [Test]
-        public void Should_update_user() {
+        public async void Should_update_user() {
             dynamic db = Database.Open();
             
             var user = new IdentityUser("Jack");
             user.Id = "D0F971C4-123B-4736-97EC-8F3B57D038AB";
             user.Email = "Jack@test.com";
             
-            db.AspNetUsers.Insert(user);
+            await db.AspNetUsers.Insert(user);
 
             user.PhoneNumber = "0800 12345678";
 
-            var task = _target.UpdateAsync(user);
+            await _target.UpdateAsync(user);
 
-            task.Wait();
 
-            IdentityUser updatedUser = db.AspNetUsers.FindAllById("D0F971C4-123B-4736-97EC-8F3B57D038AB").FirstOrDefault();
+            IdentityUser updatedUser = await db.AspNetUsers.FindAllById("D0F971C4-123B-4736-97EC-8F3B57D038AB").FirstOrDefault();
 
             Assert.That(updatedUser.PhoneNumber, Is.EqualTo("0800 12345678"));
 

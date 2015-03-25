@@ -34,45 +34,45 @@ namespace Simple.Data.AspNet.Identity.Tests
             return new IdentityUser{Id = LockedOut_UserId, UserName = "Tony", Email = "Tony@test.com",AccessFailedCount = 5, LockoutEnabled = true};
         }
 
-        public static void AddUsers(bool useCustomTables = false)
+        public static async void AddUsers(bool useCustomTables = false)
         {
             string tableName = useCustomTables ? "MyUsers" : "AspNetUsers";
 
-            Db[tableName].Insert(Id: John_UserId, UserName: "John", Email: "John@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0, PasswordHash: "sa;ldfkjsldfjlajte");
-            Db[tableName].Insert(Id: Sue_UserId, UserName: "Sue", Email: "Sue@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0, PasswordHash: "0uptj0bqoweojf");
-            Db[tableName].Insert(Id: UserNoRoles_UserId, UserName: "Fred", Email: "Fred@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0);
-            Db[tableName].Insert(Id: UserNoPasswordHash_UserId, UserName: "Jayne", Email: "jayne@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0);
-            Db[tableName].Insert(Id: LockedOut_UserId, UserName: "Tony", Email: "Tony@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: true, AccessFailedCount: 5, PasswordHash: "a8weyraweghadh", LockoutEndDateUtc: DateTime.Now.AddHours(1));
+            await Db[tableName].Insert(Id: John_UserId, UserName: "John", Email: "John@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0, PasswordHash: "sa;ldfkjsldfjlajte");
+            await Db[tableName].Insert(Id: Sue_UserId, UserName: "Sue", Email: "Sue@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0, PasswordHash: "0uptj0bqoweojf");
+            await Db[tableName].Insert(Id: UserNoRoles_UserId, UserName: "Fred", Email: "Fred@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0);
+            await Db[tableName].Insert(Id: UserNoPasswordHash_UserId, UserName: "Jayne", Email: "jayne@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: false, AccessFailedCount: 0);
+            await Db[tableName].Insert(Id: LockedOut_UserId, UserName: "Tony", Email: "Tony@test.com", EmailConfirmed: false, PhoneNumberConfirmed: false, TwoFactorEnabled: false, LockoutEnabled: true, AccessFailedCount: 5, PasswordHash: "a8weyraweghadh", LockoutEndDateUtc: DateTime.Now.AddHours(1));
         }
 
-        public static void AddRoles(bool useCustomTables = false)
+        public static async void AddRoles(bool useCustomTables = false)
         {
             string tableName = useCustomTables ? "MyRoles" : "AspNetRoles";
-            Db[tableName].Insert(Id: Admin_RoleId, Name: "Admin");
-            Db[tableName].Insert(Id: User_RoleId, Name: "User");
+            await Db[tableName].Insert(Id: Admin_RoleId, Name: "Admin");
+            await Db[tableName].Insert(Id: User_RoleId, Name: "User");
         }
 
-        public static void AddRolesToUsers(bool useCustomTables = false)
+        public static async void AddRolesToUsers(bool useCustomTables = false)
         {
             string tableName = useCustomTables ? "MyUserRole" : "AspNetUserRole";
-            Db[tableName].Insert(UserId: John_UserId, RoleId: Admin_RoleId);
-            Db[tableName].Insert(UserId: Sue_UserId, RoleId: User_RoleId);
+            await Db[tableName].Insert(UserId: John_UserId, RoleId: Admin_RoleId);
+            await Db[tableName].Insert(UserId: Sue_UserId, RoleId: User_RoleId);
         }
 
-        public static void AddClaimsToUsers(bool useCustomTables = false)
+        public static async void AddClaimsToUsers(bool useCustomTables = false)
         {
             string tableName = useCustomTables ? "MyUserClaims" : "AspNetUserClaims";
-            Db[tableName].Insert(UserId: John_UserId, ClaimType: ClaimTypes.Email, ClaimValue: "John@test.com");
-            Db[tableName].Insert(UserId: John_UserId, ClaimType: ClaimTypes.Country, ClaimValue: "UK");
+            await Db[tableName].Insert(UserId: John_UserId, ClaimType: ClaimTypes.Email, ClaimValue: "John@test.com");
+            await Db[tableName].Insert(UserId: John_UserId, ClaimType: ClaimTypes.Country, ClaimValue: "UK");
         }
 
-        public static void AdLoginsForUsers(bool useCustomTables = false)
+        public static async void AdLoginsForUsers(bool useCustomTables = false)
         {
             string tableName = useCustomTables ? "MyUserLogins" : "AspNetUserLogins";
 
-            Db[tableName].Insert(LoginProvider: "Google", ProviderKey: "123", UserId: John_UserId);
-            Db[tableName].Insert(LoginProvider: "GitHub", ProviderKey: "abc", UserId: John_UserId);
-            Db[tableName].Insert(LoginProvider: "Facebook", ProviderKey: "xyz-123", UserId: John_UserId);
+            await Db[tableName].Insert(LoginProvider: "Google", ProviderKey: "123", UserId: John_UserId);
+            await Db[tableName].Insert(LoginProvider: "GitHub", ProviderKey: "abc", UserId: John_UserId);
+            await Db[tableName].Insert(LoginProvider: "Facebook", ProviderKey: "xyz-123", UserId: John_UserId);
         }
     }
 }
