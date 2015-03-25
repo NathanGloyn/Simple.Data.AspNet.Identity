@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Simple.Data.AspNet.Identity 
 {
@@ -13,38 +14,38 @@ namespace Simple.Data.AspNet.Identity
             _tables = userTable;
         }
 
-        public void Insert(TUser user)
+        public async Task Insert(TUser user)
         {
-            _db[_tables.Users].Insert(user);
+            await _db[_tables.Users].Insert(user);
         }
 
-        public int Delete(string id) {
-            return _db[_tables.Users].DeleteById(id);
+        public async Task<int> Delete(string id) {
+            return await _db[_tables.Users].DeleteById(id);
         }
 
-        public TUser GetUserById(string userId) 
+        public async Task<TUser> GetUserById(string userId) 
         {
-            return _db[_tables.Users]
+            return await _db[_tables.Users]
                      .FindAllById(userId)
                      .FirstOrDefault();
         }
 
-        public TUser GetUserByName(string userName) {
-            return _db[_tables.Users]
+        public async Task<TUser> GetUserByName(string userName) {
+            return await _db[_tables.Users]
                      .FindAllByUserName(userName)
                      .FirstOrDefault();
         }
 
-        public int Update(TUser user) {
-            return _db[_tables.Users].UpdateById(user);
+        public async Task<int> Update(TUser user) {
+            return await _db[_tables.Users].UpdateById(user);
         }
 
-        public IEnumerable<TUser> AllUsers() {
-            return _db[_tables.Users].All();
+        public async Task<IEnumerable<TUser>> AllUsers() {
+            return await _db[_tables.Users].All();
         }
 
-        public string GetPasswordHash(TUser user) {
-            var userDetails =  GetUserById(user.Id);
+        public async Task<string> GetPasswordHash(TUser user) {
+            var userDetails =  await GetUserById(user.Id);
 
             if (userDetails != null)
             {
@@ -54,9 +55,9 @@ namespace Simple.Data.AspNet.Identity
             return string.Empty;
         }
 
-        public TUser GetUserByEmail(string email)
+        public async Task<TUser> GetUserByEmail(string email)
         {
-            return _db[_tables.Users].FindAllByEmail(email).FirstOrDefault();
+            return await _db[_tables.Users].FindAllByEmail(email).FirstOrDefault();
         }
     }
 }

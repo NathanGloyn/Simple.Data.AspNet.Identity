@@ -72,7 +72,7 @@ namespace Simple.Data.AspNet.Identity {
         /// </summary>
         /// <param name="user">User to insert</param>
         /// <returns>The task representing the asynchronous operation.</returns>
-        public Task CreateAsync(TUser user)
+        public async Task CreateAsync(TUser user)
         {
             ThrowIfDisposed();
 
@@ -81,9 +81,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            _storage.UsersTable.Insert(user);
-
-            return Task.FromResult<object>(null);
+            await _storage.UsersTable.Insert(user);
         }
 
         /// <summary>
@@ -311,7 +309,7 @@ namespace Simple.Data.AspNet.Identity {
         /// </summary>
         /// <param name="user">The user</param>
         /// <returns>Task whose result is users password hash</returns>
-        public Task<string> GetPasswordHashAsync(TUser user)
+        public async Task<string> GetPasswordHashAsync(TUser user)
         {
             ThrowIfDisposed();
 
@@ -320,9 +318,9 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            string passwordHash = _storage.UsersTable.GetPasswordHash(user);
+            string passwordHash = await _storage.UsersTable.GetPasswordHash(user);
 
-            return Task.FromResult(passwordHash);
+            return passwordHash;
         }
 
         /// <summary>
@@ -330,16 +328,16 @@ namespace Simple.Data.AspNet.Identity {
         /// </summary>
         /// <param name="user">The user</param>
         /// <returns>Task whose result is true if password hash exists; else task result is false.</returns>
-        public Task<bool> HasPasswordAsync(TUser user)
+        public async Task<bool> HasPasswordAsync(TUser user)
         {
             if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
 
-            var result = !string.IsNullOrEmpty(_storage.UsersTable.GetPasswordHash(user));
+            var result = !string.IsNullOrEmpty(await _storage.UsersTable.GetPasswordHash(user));
 
-            return Task.FromResult(result);
+            return result;
         }
 
         /// <summary>
@@ -419,7 +417,7 @@ namespace Simple.Data.AspNet.Identity {
         /// </summary>
         /// <param name="user">The user</param>
         /// <returns>Task whose result is <see cref="DateTimeOffset"/> of lockout end date or default DateTimeOffset value</returns>
-        public Task<DateTimeOffset> GetLockoutEndDateAsync(TUser user)
+        public async Task<DateTimeOffset> GetLockoutEndDateAsync(TUser user)
         {
             ThrowIfDisposed();
 
@@ -428,13 +426,11 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            var userDetail = _storage.UsersTable.GetUserById(user.Id);
+            var userDetail = await _storage.UsersTable.GetUserById(user.Id);
 
-            return
-                Task.FromResult(
-                    userDetail.LockoutEndDateUtc.HasValue
+            return userDetail.LockoutEndDateUtc.HasValue
                         ? new DateTimeOffset(DateTime.SpecifyKind(userDetail.LockoutEndDateUtc.Value, DateTimeKind.Utc))
-                        : new DateTimeOffset());
+                        : new DateTimeOffset();
         }
 
         /// <summary>

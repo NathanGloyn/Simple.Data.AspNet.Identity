@@ -15,16 +15,16 @@ namespace Simple.Data.AspNet.Identity.Tests.User {
         }
 
         [Test]
-        public void Should_throw_ArgumentNullException_if_user_is_null() 
+        public void Should_throw_ArgumentNullException_if_user_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.CreateAsync(null));
+            Assert.Throws<ArgumentNullException>(async () => await _target.CreateAsync(null));
         }
 
         [Test]
         public void Should_throw_ObjectDisposedException_if_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.CreateAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.CreateAsync(new IdentityUser()));
         }
 
         [Test]
@@ -74,7 +74,10 @@ namespace Simple.Data.AspNet.Identity.Tests.User {
         private IdentityUser GetTestUser()
         {
             dynamic db = Database.Open();
-            return db.AspNetUsers.FindAllByUserName("John").SingleOrDefault();
+            var task = db.AspNetUsers.FindAllByUserName("John").SingleOrDefault();
+            task.Wait();
+
+            return task.Result;
         }
     }
 }
