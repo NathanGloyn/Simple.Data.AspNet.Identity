@@ -20,23 +20,22 @@ namespace Simple.Data.AspNet.Identity.Tests.SecurityStamp
         public void Should_throw_ObjectDisposedException_calling_FindByBName_and_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.SetSecurityStampAsync(new IdentityUser(),""));
+            Assert.Throws<ObjectDisposedException>( async () => await _target.SetSecurityStampAsync(new IdentityUser(),""));
         }
 
         [Test]
         public void Should_throw_ArgumentNullException_if_user_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.SetSecurityStampAsync(null,""));
+            Assert.Throws<ArgumentNullException>( async () => await _target.SetSecurityStampAsync(null,""));
         }
 
         [Test]
-        public void Should_set_the_security_stamp_for_the_user()
+        public async void Should_set_the_security_stamp_for_the_user()
         {
-            var task = _target.SetSecurityStampAsync(TestData.GetTestUserJohn(), "newStamp");
-            task.Wait();
+            await _target.SetSecurityStampAsync(TestData.GetTestUserJohn(), "newStamp");
 
             var db = Database.Open();
-            IdentityUser user = db.AspNetUsers.FindAllById(TestData.John_UserId).FirstOrDefault();
+            IdentityUser user = await db.AspNetUsers.FindAllById(TestData.John_UserId).FirstOrDefault();
 
             Assert.That(user.SecurityStamp, Is.EqualTo("newStamp"));
         }

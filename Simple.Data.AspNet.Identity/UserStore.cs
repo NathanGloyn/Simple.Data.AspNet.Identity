@@ -89,7 +89,7 @@ namespace Simple.Data.AspNet.Identity {
         /// </summary>
         /// <param name="user">User to update</param>
         /// <returns>The task representing the asynchronous operation.</returns>
-        public Task UpdateAsync(TUser user)
+        public async Task UpdateAsync(TUser user)
         {
             ThrowIfDisposed();
 
@@ -103,9 +103,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentException("Missing Id", "user");
             }
 
-            _storage.UsersTable.Update(user);
-
-            return Task.FromResult<object>(null);
+            await _storage.UsersTable.Update(user);
         }
 
         /// <summary>
@@ -113,7 +111,7 @@ namespace Simple.Data.AspNet.Identity {
         /// </summary>
         /// <param name="user">TUser to delete</param>
         /// <returns>The task representing the asynchronous operation.</returns>
-        public Task DeleteAsync(TUser user)
+        public async Task DeleteAsync(TUser user)
         {
             ThrowIfDisposed();
 
@@ -127,9 +125,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentException("Missing user Id");
             }
 
-            _storage.UsersTable.Delete(user.Id);
-
-            return Task.FromResult<Object>(null);
+            await _storage.UsersTable.Delete(user.Id);
         }
 
         /// <summary>
@@ -189,7 +185,7 @@ namespace Simple.Data.AspNet.Identity {
 
             if (!string.IsNullOrEmpty(roleId))
             {
-                _storage.UserRolesTable.Insert(user, roleId);
+                await _storage.UserRolesTable.Insert(user, roleId);
             }
 
         }
@@ -232,7 +228,7 @@ namespace Simple.Data.AspNet.Identity {
         /// </summary>
         /// <param name="user">The user</param>
         /// <returns>Task whose result is <see cref="IList"><see cref="string"/></see>/></returns>
-        public Task<IList<string>> GetRolesAsync(TUser user)
+        public async Task<IList<string>> GetRolesAsync(TUser user)
         {
             ThrowIfDisposed();
 
@@ -241,11 +237,10 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            IList<string> roleNames = _storage.UserRolesTable.FindByUserId(user.Id)
-                .Select(role => role.Name)
-                .ToList();
+            var roles = await _storage.UserRolesTable.FindByUserId(user.Id);
+             IList<string> roleNames = roles.Select(role => role.Name).ToList();
 
-            return Task.FromResult(roleNames);
+            return roleNames;
         }
 
         /// <summary>
@@ -254,7 +249,7 @@ namespace Simple.Data.AspNet.Identity {
         /// <param name="user">The user</param>
         /// <param name="roleName">Name of the role</param>
         /// <returns>Task whose result is true if in the role;otherwise Task with result false</returns>
-        public Task<bool> IsInRoleAsync(TUser user, string roleName)
+        public async Task<bool> IsInRoleAsync(TUser user, string roleName)
         {
             ThrowIfDisposed();   
 
@@ -268,9 +263,9 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("roleName");
             }
 
-            var userRoles = _storage.UserRolesTable.FindByUserId(user.Id);
+            var userRoles = await _storage.UserRolesTable.FindByUserId(user.Id);
 
-            return Task.FromResult(userRoles.Any(x => x.Name == roleName));
+            return userRoles.Any(x => x.Name == roleName);
 
         }
 
@@ -280,7 +275,7 @@ namespace Simple.Data.AspNet.Identity {
         /// <param name="user">The user</param>
         /// <param name="passwordHash">Password hash</param>
         /// <returns>The task representing the asynchronous operation.</returns>
-        public Task SetPasswordHashAsync(TUser user, string passwordHash)
+        public async Task SetPasswordHashAsync(TUser user, string passwordHash)
         {
             ThrowIfDisposed();
 
@@ -296,9 +291,7 @@ namespace Simple.Data.AspNet.Identity {
 
             user.PasswordHash = passwordHash;
 
-            _storage.UsersTable.Update(user);
-
-            return Task.FromResult<object>(null);
+            await _storage.UsersTable.Update(user);
         }
 
         /// <summary>
@@ -342,7 +335,7 @@ namespace Simple.Data.AspNet.Identity {
         /// </summary>
         /// <param name="user">The user</param>
         /// <returns>Task whose result is <see cref="IList"><see cref="Claim"/></see> for the user.</returns>
-        public Task<IList<Claim>> GetClaimsAsync(TUser user)
+        public async Task<IList<Claim>> GetClaimsAsync(TUser user)
         {
             ThrowIfDisposed();
 
@@ -351,9 +344,9 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            var result = _storage.UserClaimsTable.FindByUserId(user.Id);
+            var result = await _storage.UserClaimsTable.FindByUserId(user.Id);
 
-            return Task.FromResult<IList<Claim>>(result.Claims.ToList());
+            return result.Claims.ToList();
         }
 
         /// <summary>
@@ -362,7 +355,7 @@ namespace Simple.Data.AspNet.Identity {
         /// <param name="user">The user</param>
         /// <param name="claim">Claim to add</param>
         /// <returns>The task representing the asynchronous operation.</returns>
-        public Task AddClaimAsync(TUser user, Claim claim)
+        public async Task AddClaimAsync(TUser user, Claim claim)
         {
             ThrowIfDisposed();
 
@@ -377,9 +370,7 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             var userClaim = new IdentityClaim(user.Id, claim);
-            _storage.UserClaimsTable.AddClaim(userClaim);
-
-            return Task.FromResult<object>(null);
+            await _storage.UserClaimsTable.AddClaim(userClaim);
         }
 
         /// <summary>
@@ -388,7 +379,7 @@ namespace Simple.Data.AspNet.Identity {
         /// <param name="user">The user</param>
         /// <param name="claim">Claim to remove</param>
         /// <returns>The task representing the asynchronous operation.</returns>
-        public Task RemoveClaimAsync(TUser user, Claim claim)
+        public async Task RemoveClaimAsync(TUser user, Claim claim)
         {
             ThrowIfDisposed();
 
@@ -404,9 +395,7 @@ namespace Simple.Data.AspNet.Identity {
 
             var userClaim = new IdentityClaim(user.Id, claim);
 
-            _storage.UserClaimsTable.RemoveClaim(userClaim);
-
-            return Task.FromResult<object>(null);
+            await _storage.UserClaimsTable.RemoveClaim(userClaim);
         }
 
         /// <summary>
@@ -436,7 +425,7 @@ namespace Simple.Data.AspNet.Identity {
         /// <param name="user">The user</param>
         /// <param name="lockoutEnd">The Lockout end.</param>
         /// <returns>The task representing the asynchronous operation.</returns>
-        public Task SetLockoutEndDateAsync(TUser user, DateTimeOffset lockoutEnd)
+        public async Task SetLockoutEndDateAsync(TUser user, DateTimeOffset lockoutEnd)
         {
             ThrowIfDisposed();
 
@@ -447,9 +436,7 @@ namespace Simple.Data.AspNet.Identity {
 
             user.LockoutEndDateUtc = lockoutEnd.UtcDateTime;
 
-            _storage.UsersTable.Update(user);
-
-            return Task.FromResult<int>(0);
+            await _storage.UsersTable.Update(user);
         }
 
         /// <summary>
@@ -457,7 +444,7 @@ namespace Simple.Data.AspNet.Identity {
         /// </summary>
         /// <param name="user">The user</param>
         /// <returns>Task whose result is current count of failed access attempts</returns>
-        public Task<int> IncrementAccessFailedCountAsync(TUser user)
+        public async Task<int> IncrementAccessFailedCountAsync(TUser user)
         {
             ThrowIfDisposed();
 
@@ -467,9 +454,9 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             user.AccessFailedCount++;
-            _storage.UsersTable.Update(user);
+            await _storage.UsersTable.Update(user);
 
-            return Task.FromResult(user.AccessFailedCount);
+            return user.AccessFailedCount;
         }
 
         /// <summary>
@@ -477,7 +464,7 @@ namespace Simple.Data.AspNet.Identity {
         /// </summary>
         /// <param name="user">The user</param>
         /// <returns>Task whose result is current count of failed access attempts</returns>
-        public Task ResetAccessFailedCountAsync(TUser user)
+        public async Task ResetAccessFailedCountAsync(TUser user)
         {
             ThrowIfDisposed();
 
@@ -487,9 +474,7 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             user.AccessFailedCount = 0;
-            _storage.UsersTable.Update(user);
-
-            return Task.FromResult<int>(user.AccessFailedCount);
+            await _storage.UsersTable.Update(user);
         }
 
         /// <summary>
@@ -532,7 +517,7 @@ namespace Simple.Data.AspNet.Identity {
         /// <param name="user">The user</param>
         /// <param name="enabled">true if the user can be locked out; otherwise, false.</param>
         /// <returns></returns>
-        public Task SetLockoutEnabledAsync(TUser user, bool enabled)
+        public async Task SetLockoutEnabledAsync(TUser user, bool enabled)
         {
             ThrowIfDisposed();
 
@@ -542,9 +527,7 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             user.LockoutEnabled = enabled;
-            _storage.UsersTable.Update(user);
-
-            return Task.FromResult<int>(0);
+            await _storage.UsersTable.Update(user);
         }
 
         /// <summary>
@@ -553,7 +536,7 @@ namespace Simple.Data.AspNet.Identity {
         /// <param name="user">The user</param>
         /// <param name="login">The login information</param>
         /// <returns>The task representing the asynchronous operation.</returns>
-        public Task AddLoginAsync(TUser user, UserLoginInfo login)
+        public async Task AddLoginAsync(TUser user, UserLoginInfo login)
         {
             ThrowIfDisposed();
 
@@ -567,9 +550,8 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("login");
             }
 
-            _storage.UserLoginsTable.AddLogin(user, login);
+            await _storage.UserLoginsTable.AddLogin(user, login);
 
-            return Task.FromResult<int>(0);
         }
 
         /// <summary>
@@ -578,7 +560,7 @@ namespace Simple.Data.AspNet.Identity {
         /// <param name="user">The user</param>
         /// <param name="login">The login information</param>
         /// <returns>The task representing the asynchronous operation.</returns>
-        public Task RemoveLoginAsync(TUser user, UserLoginInfo login)
+        public async Task RemoveLoginAsync(TUser user, UserLoginInfo login)
         {
             ThrowIfDisposed();
 
@@ -592,9 +574,7 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("login");
             }
 
-            _storage.UserLoginsTable.RemoveLogin(user, login);
-
-            return Task.FromResult<int>(0);
+            await _storage.UserLoginsTable.RemoveLogin(user, login);
         }
 
         /// <summary>
@@ -602,7 +582,7 @@ namespace Simple.Data.AspNet.Identity {
         /// </summary>
         /// <param name="user">The user</param>
         /// <returns>Task whose result is a <see cref="IList"><see cref="UserLogin"/></see> for the user.</returns>
-        public Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user)
+        public async Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user)
         {
             ThrowIfDisposed();
 
@@ -611,9 +591,9 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("user");
             }
 
-            var logins = _storage.UserLoginsTable.GetLogins(user);
+            var logins = await _storage.UserLoginsTable.GetLogins(user);
 
-            return Task.FromResult<IList<UserLoginInfo>>(logins);
+            return logins;
         }
 
         /// <summary>
@@ -621,7 +601,7 @@ namespace Simple.Data.AspNet.Identity {
         /// </summary>
         /// <param name="login">The login information</param>
         /// <returns>Task whose result is a user</returns>
-        public Task<TUser> FindAsync(UserLoginInfo login)
+        public async Task<TUser> FindAsync(UserLoginInfo login)
         {
             ThrowIfDisposed();
 
@@ -630,10 +610,10 @@ namespace Simple.Data.AspNet.Identity {
                 throw new ArgumentNullException("login");
             }
 
-            var userId = _storage.UserLoginsTable.FindUserId(login);
-            var user = _storage.UsersTable.GetUserById(userId) as TUser;
+            var userId = await _storage.UserLoginsTable.FindUserId(login);
+            var user = await _storage.UsersTable.GetUserById(userId) as TUser;
 
-            return Task.FromResult(user);
+            return user;
         }
 
         /// <summary>
@@ -680,7 +660,7 @@ namespace Simple.Data.AspNet.Identity {
         /// <param name="user">The user</param>
         /// <param name="email">Email address</param>
         /// <returns>The task representing the asynchronous operation.</returns>
-        public Task SetEmailAsync(TUser user, string email)
+        public async Task SetEmailAsync(TUser user, string email)
         {
             ThrowIfDisposed();
 
@@ -690,9 +670,7 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             user.Email = email;
-            _storage.UsersTable.Update(user);
-
-            return Task.FromResult(0);
+            await _storage.UsersTable.Update(user);
         }
 
         /// <summary>
@@ -735,7 +713,7 @@ namespace Simple.Data.AspNet.Identity {
         /// <param name="user">The user</param>
         /// <param name="confirmed">true if the user e-mail is confirmed; otherwise false</param>
         /// <returns>The task representing the asynchronous operation.</returns>
-        public Task SetEmailConfirmedAsync(TUser user, bool confirmed)
+        public async Task SetEmailConfirmedAsync(TUser user, bool confirmed)
         {
             ThrowIfDisposed();
 
@@ -745,9 +723,7 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             user.EmailConfirmed = confirmed;
-            _storage.UsersTable.Update(user);
-
-            return Task.FromResult(0);
+            await _storage.UsersTable.Update(user);
         }
 
         /// <summary>
@@ -755,11 +731,11 @@ namespace Simple.Data.AspNet.Identity {
         /// </summary>
         /// <param name="email">The user e-mail</param>
         /// <returns>Task whose result is the user; if no user found result is null</returns>
-        public Task<TUser> FindByEmailAsync(string email)
+        public async Task<TUser> FindByEmailAsync(string email)
         {
             ThrowIfDisposed();
 
-            return Task.FromResult(_storage.UsersTable.GetUserByEmail(email) as TUser);
+            return await _storage.UsersTable.GetUserByEmail(email);
         }
 
         /// <summary>
@@ -823,7 +799,7 @@ namespace Simple.Data.AspNet.Identity {
         /// <param name="user">The user</param>
         /// <param name="confirmed">true if the user phone number is confirmed; otherwise, false.</param>
         /// <returns>The task representing the asynchronous operation.</returns>
-        public Task SetPhoneNumberConfirmedAsync(TUser user, bool confirmed)
+        public async Task SetPhoneNumberConfirmedAsync(TUser user, bool confirmed)
         {
             ThrowIfDisposed();
 
@@ -833,9 +809,7 @@ namespace Simple.Data.AspNet.Identity {
             }
 
             user.PhoneNumberConfirmed = confirmed;
-            _storage.UsersTable.Update(user);
-
-            return Task.FromResult(0);
+            await _storage.UsersTable.Update(user);
         }
 
         /// <summary>

@@ -21,14 +21,14 @@ namespace Simple.Data.AspNet.Identity.Tests.Claims
         [Test]
         public void Should_throw_argument_null_exception_if_user_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.RemoveClaimAsync(null, new Claim("", "")));
+            Assert.Throws<ArgumentNullException>(async () => await _target.RemoveClaimAsync(null, new Claim("", "")));
         }
 
         [Test]
         public void Should_throw_ObjectDisposedException_if_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.RemoveClaimAsync(new IdentityUser(), new Claim("","")));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.RemoveClaimAsync(new IdentityUser(), new Claim("","")));
         }
 
         [Test]
@@ -36,22 +36,19 @@ namespace Simple.Data.AspNet.Identity.Tests.Claims
         {
             var user = new IdentityUser();
 
-            Assert.Throws<ArgumentNullException>(() => _target.RemoveClaimAsync(user, null));
+            Assert.Throws<ArgumentNullException>(async () => await _target.RemoveClaimAsync(user, null));
         }
 
         [Test]
-        public void Should_remove_claim()
+        public async void Should_remove_claim()
         {
             var user = TestData.GetTestUserJohn();
             var claimToDelete = new Claim(ClaimTypes.Email, "John@Test.com");
 
-            var task = _target.RemoveClaimAsync(user, claimToDelete);
-
-            task.Wait();
-
+            await _target.RemoveClaimAsync(user, claimToDelete);
 
             var db = Database.Open();
-            var claims = db.AspNetUserClaims.FindAllByUserId(TestData.John_UserId).ToList();
+            var claims = await db.AspNetUserClaims.FindAllByUserId(TestData.John_UserId).ToList();
 
             Assert.That(claims.Count, Is.EqualTo(1));
 

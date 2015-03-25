@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Simple.Data.AspNet.Identity 
 {
@@ -14,16 +15,16 @@ namespace Simple.Data.AspNet.Identity
         }
 
 
-        public void Insert(IdentityUser user, string roleId) {
-            _db[_tables.UsersRoles].Insert(UserId: user.Id, roleId: roleId);
+        public async Task Insert(IdentityUser user, string roleId) {
+            await _db[_tables.UsersRoles].Insert(UserId: user.Id, roleId: roleId);
         }
 
-        public void Delete(IdentityUser user, string roleId) {
-            _db[_tables.UsersRoles].Delete(UserId: user.Id, RoleId: roleId);
+        public async void Delete(IdentityUser user, string roleId) {
+            await _db[_tables.UsersRoles].Delete(UserId: user.Id, RoleId: roleId);
         }
 
-        public IEnumerable<IdentityRole> FindByUserId(string userId) {
-            return _db[_tables.UsersRoles].FindAllByUserId(userId)
+        public async Task<IEnumerable<IdentityRole>> FindByUserId(string userId) {
+            return await _db[_tables.UsersRoles].FindAllByUserId(userId)
                  .Select(_db[_tables.UsersRoles][_tables.Roles].Name, _db[_tables.UsersRoles].RoleId);
         }
     }

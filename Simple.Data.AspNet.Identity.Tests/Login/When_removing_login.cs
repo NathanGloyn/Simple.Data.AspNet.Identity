@@ -24,38 +24,36 @@ namespace Simple.Data.AspNet.Identity.Tests.Login
         public void Should_throw_ObjectDisposedException_if_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.RemoveLoginAsync(new IdentityUser(), new UserLoginInfo("", "")));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.RemoveLoginAsync(new IdentityUser(), new UserLoginInfo("", "")));
         }
 
         [Test]
         public void Should_throw_ArgumentNullException_if_user_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.RemoveLoginAsync(null, new UserLoginInfo("", "")));
+            Assert.Throws<ArgumentNullException>(async () => await _target.RemoveLoginAsync(null, new UserLoginInfo("", "")));
         }
 
         [Test]
         public void Should_throw_ArgumentNullException_if_loginInfo_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.RemoveLoginAsync(TestData.GetTestUserJohn(), null));
+            Assert.Throws<ArgumentNullException>(async () => await _target.RemoveLoginAsync(TestData.GetTestUserJohn(), null));
         }
 
         [Test]
         public void Should_not_error_if_login_does_not_exist()
         {
             var login = new UserLoginInfo("Yahoo", "qwe");
-            Assert.DoesNotThrow(()=> _target.RemoveLoginAsync(TestData.GetTestUserJohn(), login));
+            Assert.DoesNotThrow(async ()=> await _target.RemoveLoginAsync(TestData.GetTestUserJohn(), login));
         }
 
         [Test]
-        public void Should_remove_login_from_user()
+        public async void Should_remove_login_from_user()
         {
             var login = new UserLoginInfo("Google", "123");
-            var task = _target.RemoveLoginAsync(TestData.GetTestUserJohn(), login);
-
-            task.Wait();
+            await _target.RemoveLoginAsync(TestData.GetTestUserJohn(), login);
 
             var db = Database.Open();
-            var records = db.AspNetUserLogins.FindAllByUserId(TestData.John_UserId)
+            var records = await db.AspNetUserLogins.FindAllByUserId(TestData.John_UserId)
                 .Select(db.AspNetUserLogins.LoginProvider, db.AspNetUserLogins.ProviderKey);
 
             List<UserLoginInfo> logins = new List<UserLoginInfo>();

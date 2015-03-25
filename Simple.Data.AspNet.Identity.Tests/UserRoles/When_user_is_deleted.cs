@@ -20,24 +20,22 @@ namespace Simple.Data.AspNet.Identity.Tests.UserRoles {
         {
             var target = new UserStore<IdentityUser>();
             target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => target.GetRolesAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(async () => await target.GetRolesAsync(new IdentityUser()));
         }
 
         [Test]
-        public void Should_remove_user_role_record() 
+        public async void Should_remove_user_role_record() 
         {
             var user = new IdentityUser();
             user.Id = TestData.John_UserId;
 
             var target = new UserStore<IdentityUser>();
 
-            var task = target.DeleteAsync(user);
-
-            task.Wait();
+            await target.DeleteAsync(user);
 
             dynamic db = Database.Open();
 
-            var userRoles = db.AspNetUserRole.FindAllByUserId(user.Id);
+            var userRoles = await db.AspNetUserRole.FindAllByUserId(user.Id);
             Assert.That(userRoles, Is.Empty);
         }
     }

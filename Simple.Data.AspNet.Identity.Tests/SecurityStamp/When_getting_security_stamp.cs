@@ -17,24 +17,22 @@ namespace Simple.Data.AspNet.Identity.Tests.SecurityStamp
         public void Should_throw_ObjectDisposedException_calling_FindByBName_and_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.GetSecurityStampAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.GetSecurityStampAsync(new IdentityUser()));
         }
 
         [Test]
         public void Should_throw_ArgumentNullException_if_user_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.GetSecurityStampAsync(null));
+            Assert.Throws<ArgumentNullException>( async () => await _target.GetSecurityStampAsync(null));
         }
 
         [Test]
-        public void Should_get_security_stamp_for_user()
+        public async void Should_get_security_stamp_for_user()
         {
             var user = TestData.GetTestUserJohn();
-            var task = _target.GetSecurityStampAsync(user);
+            var securityStamp = await _target.GetSecurityStampAsync(user);
 
-            task.Wait();
-
-            Assert.That(task.Result, Is.EqualTo(user.SecurityStamp));
+            Assert.That(securityStamp, Is.EqualTo(user.SecurityStamp));
         }
     }
 }

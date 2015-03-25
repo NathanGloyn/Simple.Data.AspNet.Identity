@@ -37,7 +37,9 @@ namespace Simple.Data.AspNet.Identity
         }
 
         public async Task<int> Update(TUser user) {
-            return await _db[_tables.Users].UpdateById(user);
+            var result = await _db[_tables.Users].UpdateById(user);
+
+            return result.RowsAffected;
         }
 
         public async Task<IEnumerable<TUser>> AllUsers() {

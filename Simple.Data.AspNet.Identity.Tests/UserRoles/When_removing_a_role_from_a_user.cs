@@ -19,14 +19,14 @@ namespace Simple.Data.AspNet.Identity.Tests.UserRoles {
         [Test]
         public void Should_throw_ArgumentNullException_if_user_is_null()
         {
-            Assert.That(() => _target.RemoveFromRoleAsync(null,"Admin"), Throws.TypeOf<ArgumentNullException>().With.Message.EqualTo("Value cannot be null.\r\nParameter name: user"));
+            Assert.That(async () => await _target.RemoveFromRoleAsync(null,"Admin"), Throws.TypeOf<ArgumentNullException>().With.Message.EqualTo("Value cannot be null.\r\nParameter name: user"));
         }
 
         [Test]
         public void Should_throw_ObjectDisposedException_if_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.RemoveFromRoleAsync(new IdentityUser(),""));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.RemoveFromRoleAsync(new IdentityUser(),""));
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace Simple.Data.AspNet.Identity.Tests.UserRoles {
         {
             var user = new IdentityUser();
 
-            Assert.That(() => _target.RemoveFromRoleAsync(user, roleName), Throws.ArgumentException.With.Message.EqualTo("Argument cannot be null or empty: roleName."));
+            Assert.That(async () => await _target.RemoveFromRoleAsync(user, roleName), Throws.ArgumentException.With.Message.EqualTo("Argument cannot be null or empty: roleName."));
         }
 
         [Test]
@@ -42,23 +42,19 @@ namespace Simple.Data.AspNet.Identity.Tests.UserRoles {
         {
             var user = new IdentityUser();
 
-            Assert.That(() => _target.RemoveFromRoleAsync(user, "SuperUser"), Throws.ArgumentException.With.Message.EqualTo("Unknown role: SuperUser"));
+            Assert.That(async () => await _target.RemoveFromRoleAsync(user, "SuperUser"), Throws.ArgumentException.With.Message.EqualTo("Unknown role: SuperUser"));
         }
 
         [Test]
-        public void Should_remove_specific_role_from_the_user() {
+        public async void Should_remove_specific_role_from_the_user() {
             var user = new IdentityUser();
             user.Id = TestData.John_UserId;
 
-            var task = _target.RemoveFromRoleAsync(user, "Admin");
-
-            task.Wait();
-
-            Assert.That(task.IsCompleted, Is.True);
+            await _target.RemoveFromRoleAsync(user, "Admin");
 
             dynamic db = Database.Open();
 
-            var found = db.AspNetUserRole.FindAllByUserId(TestData.John_UserId);
+            var found = await db.AspNetUserRole.FindAllByUserId(TestData.John_UserId);
 
             Assert.That(found, Is.Empty);
         }

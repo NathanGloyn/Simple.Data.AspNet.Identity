@@ -11,7 +11,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Phone
         {
             var target = new UserStore<IdentityUser>();
 
-            Assert.Throws<ArgumentNullException>(() => target.GetPhoneNumberAsync(null));
+            Assert.Throws<ArgumentNullException>(async () => await target.GetPhoneNumberAsync(null));
         }
 
         [Test]
@@ -19,19 +19,17 @@ namespace Simple.Data.AspNet.Identity.Tests.Phone
         {
             var target = new UserStore<IdentityUser>();
             target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => target.GetPhoneNumberConfirmedAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(async () => await target.GetPhoneNumberConfirmedAsync(new IdentityUser()));
         }
 
         [Test]
-        public void Should_return_phone_number_for_user_supplied()
+        public async void Should_return_phone_number_for_user_supplied()
         {
             var target = new UserStore<IdentityUser>();
             var user = TestData.GetTestUserJohn();
-            var task = target.GetPhoneNumberAsync(user);
+            var phoneNumber = await target.GetPhoneNumberAsync(user);
 
-            task.Wait();
-
-            Assert.That(task.Result, Is.EqualTo(user.PhoneNumber));
+            Assert.That(phoneNumber, Is.EqualTo(user.PhoneNumber));
         }
     }
 }

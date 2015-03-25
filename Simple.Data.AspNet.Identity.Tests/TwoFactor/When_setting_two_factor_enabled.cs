@@ -18,7 +18,7 @@ namespace Simple.Data.AspNet.Identity.Tests.TwoFactor
         {
             var target = new UserStore<IdentityUser>();
             target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => target.SetTwoFactorEnabledAsync(new IdentityUser(),true));
+            Assert.Throws<ObjectDisposedException>(async () => await target.SetTwoFactorEnabledAsync(new IdentityUser(),true));
         }
 
         [Test]
@@ -26,20 +26,18 @@ namespace Simple.Data.AspNet.Identity.Tests.TwoFactor
         {
             var target = new UserStore<IdentityUser>();
 
-            Assert.Throws<ArgumentNullException>(() => target.SetTwoFactorEnabledAsync(null, true));
+            Assert.Throws<ArgumentNullException>( async () => await target.SetTwoFactorEnabledAsync(null, true));
         }
 
         [Test]
-        public void Should_set_two_factor_auth_enabled()
+        public async void Should_set_two_factor_auth_enabled()
         {
             var target = new UserStore<IdentityUser>();
 
-            var task = target.SetTwoFactorEnabledAsync(TestData.GetTestUserJohn(),true);
-
-            task.Wait();
+            await target.SetTwoFactorEnabledAsync(TestData.GetTestUserJohn(),true);
 
             var db = Database.Open();
-            IdentityUser userDetails = db.AspNetUsers.FindAllById(TestData.John_UserId).FirstOrDefault();
+            IdentityUser userDetails = await db.AspNetUsers.FindAllById(TestData.John_UserId).FirstOrDefault();
 
             Assert.That(userDetails.TwoFactorEnabled, Is.True);
 

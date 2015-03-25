@@ -13,38 +13,34 @@ namespace Simple.Data.AspNet.Identity.Tests.CustomTables
         }
 
         [Test]
-        public void Should_read_user_from_MyUsers_table()
+        public async void Should_read_user_from_MyUsers_table()
         {
             TestData.AddUsers(useCustomTables: true);
             var tables = new Tables().SetUsersTable("MyUsers");
             var target = new UserStore<IdentityUser>(tables);
 
-            var task = target.FindByIdAsync(TestData.John_UserId);
+            var identityUser = await target.FindByIdAsync(TestData.John_UserId);
 
-            task.Wait();
-
-            Assert.That(task.Result, Is.Not.Null);
-            Assert.That(task.Result.UserName, Is.EqualTo("John"));
+            Assert.That(identityUser, Is.Not.Null);
+            Assert.That(identityUser.UserName, Is.EqualTo("John"));
         }
 
 
         [Test]
-        public void Should_read_role_from_MyRoles_table()
+        public async void Should_read_role_from_MyRoles_table()
         {
             TestData.AddRoles(useCustomTables: true);
             var tables = new Tables().SetRolesTable("MyRoles");
             var target = new RoleStore<IdentityRole>(tables);
 
-            var task = target.FindByNameAsync("Admin");
+            var identityRole = await target.FindByNameAsync("Admin");
 
-            task.Wait();
-
-            Assert.That(task.Result, Is.Not.Null);
-            Assert.That(task.Result.Id, Is.EqualTo(TestData.Admin_RoleId));
+            Assert.That(identityRole, Is.Not.Null);
+            Assert.That(identityRole.Id, Is.EqualTo(TestData.Admin_RoleId));
         }
 
         [Test]
-        public void Should_read_userrole_from_MyUserRoles_table()
+        public async void Should_read_userrole_from_MyUserRoles_table()
         {
             TestData.AddUsers(useCustomTables: true);
             TestData.AddRoles(useCustomTables: true);
@@ -58,17 +54,15 @@ namespace Simple.Data.AspNet.Identity.Tests.CustomTables
 
             var target = new UserStore<IdentityUser>(tables);
 
-            var task = target.GetRolesAsync(user);
+            var roles = await target.GetRolesAsync(user);
 
-            task.Wait();
-
-            var userRoles = task.Result;
+            var userRoles = roles;
 
             Assert.That(userRoles[0], Is.EqualTo("Admin"));            
         }
 
         [Test]
-        public void Should_insert_user_into_custom_user_table()
+        public async void Should_insert_user_into_custom_user_table()
         {
 
             var target = new UserStore<IdentityUser>();
@@ -76,42 +70,34 @@ namespace Simple.Data.AspNet.Identity.Tests.CustomTables
 
             var newUser = new IdentityUser("Kathy");
 
-            var task = target.CreateAsync(newUser);
-
-            task.Wait();
+            await target.CreateAsync(newUser);
 
             var db = Database.Open();
 
-            var user = (IdentityUser)db.MyUsers.FindAllByUserName("Kathy").FirstOrDefault();
+            IdentityUser user = await db.MyUsers.FindAllByUserName("Kathy").FirstOrDefault();
 
             Assert.That(user, Is.Not.Null);
             Assert.That(user.UserName, Is.EqualTo("Kathy"));
         }
 
         [Test]
-        public void Should_update_user_in_MyUsers_table()
+        public async void Should_update_user_in_MyUsers_table()
         {
             TestData.AddUsers(useCustomTables: true);
 
             var target = new UserStore<IdentityUser>();
             target.Tables.SetUsersTable("MyUsers");
 
-            var task = target.FindByIdAsync(TestData.John_UserId);
-
-            task.Wait();
-
-            var user = task.Result;
+            IdentityUser user =  await target.FindByIdAsync(TestData.John_UserId);
 
             user.PhoneNumber = "1234";
             user.PhoneNumberConfirmed = true;
 
-            var updateTask = target.UpdateAsync(user);
-
-            updateTask.Wait();
+            await target.UpdateAsync(user);
 
             var db = Database.Open();
 
-            var updatedUser = (IdentityUser)db.MyUsers.FindAllById(TestData.John_UserId).First();
+            IdentityUser updatedUser = await db.MyUsers.FindAllById(TestData.John_UserId).First();
 
             Assert.That(updatedUser.PhoneNumber, Is.EqualTo("1234"));
             Assert.That(updatedUser.PhoneNumberConfirmed, Is.True);

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Simple.Data.AspNet.Identity
 {
@@ -14,11 +15,11 @@ namespace Simple.Data.AspNet.Identity
             _tables = tables;
         }
 
-        public ClaimsIdentity FindByUserId(string userId)
+        public async Task<ClaimsIdentity> FindByUserId(string userId)
         {
             var claims = new ClaimsIdentity();
 
-            List<IdentityClaim> userClaims = _db[_tables.UsersClaims].FindAllByUserId(userId);
+            List<IdentityClaim> userClaims = await _db[_tables.UsersClaims].FindAllByUserId(userId);
 
             foreach (var claim in userClaims)
             {
@@ -28,14 +29,14 @@ namespace Simple.Data.AspNet.Identity
             return claims;
         }
 
-        public void AddClaim(IdentityClaim claim)
+        public async Task AddClaim(IdentityClaim claim)
         {
-            _db[_tables.UsersClaims].Insert(claim);
+            await _db[_tables.UsersClaims].Insert(claim);
         }
 
-        public void RemoveClaim(IdentityClaim claim)
+        public async Task RemoveClaim(IdentityClaim claim)
         {
-            _db[_tables.UsersClaims].Delete(UserId: claim.UserId, ClaimType: claim.ClaimType, ClaimValue: claim.ClaimValue);
+            await _db[_tables.UsersClaims].Delete(UserId: claim.UserId, ClaimType: claim.ClaimType, ClaimValue: claim.ClaimValue);
         }
     }
 }

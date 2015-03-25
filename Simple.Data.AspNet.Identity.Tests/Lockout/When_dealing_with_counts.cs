@@ -20,54 +20,45 @@ namespace Simple.Data.AspNet.Identity.Tests.Lockout
         [Test]
         public void Should_throw_ArgumentNullException_if_user_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.IncrementAccessFailedCountAsync(null));
-            Assert.Throws<ArgumentNullException>(() => _target.ResetAccessFailedCountAsync(null));
-            Assert.Throws<ArgumentNullException>(() => _target.GetAccessFailedCountAsync(null));
+            Assert.Throws<ArgumentNullException>(async() => await _target.IncrementAccessFailedCountAsync(null));
+            Assert.Throws<ArgumentNullException>(async() => await _target.ResetAccessFailedCountAsync(null));
+            Assert.Throws<ArgumentNullException>(async() => await _target.GetAccessFailedCountAsync(null));
         }
 
         [Test]
         public void Should_throw_ObjectDisposedException_if_disposed()
         {
            _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.IncrementAccessFailedCountAsync(new IdentityUser()));
-            Assert.Throws<ObjectDisposedException>(() => _target.ResetAccessFailedCountAsync(new IdentityUser()));
-            Assert.Throws<ObjectDisposedException>(() => _target.GetAccessFailedCountAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.IncrementAccessFailedCountAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.ResetAccessFailedCountAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.GetAccessFailedCountAsync(new IdentityUser()));
         }
 
         [Test]
-        public void Should_increment_the_failed_count()
+        public async void Should_increment_the_failed_count()
         {
-            var task = _target.IncrementAccessFailedCountAsync(TestData.GetTestUserJohn());
+            var failedCount = await _target.IncrementAccessFailedCountAsync(TestData.GetTestUserJohn());
 
-            task.Wait();
-
-
-            Assert.That(task.Result , Is.EqualTo(1));
+            Assert.That(failedCount , Is.EqualTo(1));
         }
 
         [Test]
-        public void Should_reset_the_failed_count()
+        public async void Should_reset_the_failed_count()
         {
-            dynamic task = _target.ResetAccessFailedCountAsync(TestData.GetTestUserLockedOut());
-
-            task.Wait();
-
-            Assert.That(task.Result , Is.EqualTo(0));
+            await _target.ResetAccessFailedCountAsync(TestData.GetTestUserLockedOut());
 
             var db = Database.Open();
-            IdentityUser record = db.AspNetUsers.FindAllById(TestData.LockedOut_UserId).SingleOrDefault();
+            IdentityUser record = await db.AspNetUsers.FindAllById(TestData.LockedOut_UserId).SingleOrDefault();
 
             Assert.That(record.AccessFailedCount, Is.EqualTo(0));
         }
 
         [Test]
-        public void Should_get_the_failed_count()
+        public async void Should_get_the_failed_count()
         {
-            var task = _target.GetAccessFailedCountAsync(TestData.GetTestUserLockedOut());
+            var failedAccessCount = await _target.GetAccessFailedCountAsync(TestData.GetTestUserLockedOut());
 
-            task.Wait();
-
-            Assert.That(task.Result,Is.EqualTo(5));
+            Assert.That(failedAccessCount,Is.EqualTo(5));
         }
     }
 }

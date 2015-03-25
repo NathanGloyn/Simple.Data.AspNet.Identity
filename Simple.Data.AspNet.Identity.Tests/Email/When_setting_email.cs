@@ -19,7 +19,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Email
         {
             var target = new UserStore<IdentityUser>();
             target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => target.SetEmailAsync(new IdentityUser(), ""));
+            Assert.Throws<ObjectDisposedException>(async () => await target.SetEmailAsync(new IdentityUser(), ""));
         }
 
         [Test]
@@ -27,20 +27,18 @@ namespace Simple.Data.AspNet.Identity.Tests.Email
         {
             var target = new UserStore<IdentityUser>();
 
-            Assert.Throws<ArgumentNullException>(() => target.SetEmailAsync(null, ""));
+            Assert.Throws<ArgumentNullException>(async () => await target.SetEmailAsync(null, ""));
         }
 
         [Test]
-        public void Should_set_email()
+        public async void Should_set_email()
         {
             var target = new UserStore<IdentityUser>();
 
-            var task = target.SetEmailAsync(TestData.GetTestUserJohn(), "John.Boy@test.com");
-
-            task.Wait();
+            await target.SetEmailAsync(TestData.GetTestUserJohn(), "John.Boy@test.com");
 
             var db = Database.Open();
-            IdentityUser userDetails = db.AspNetUsers.FindAllById(TestData.John_UserId).FirstOrDefault();
+            IdentityUser userDetails = await db.AspNetUsers.FindAllById(TestData.John_UserId).FirstOrDefault();
 
             Assert.That(userDetails.Email, Is.EqualTo("John.Boy@test.com"));
 

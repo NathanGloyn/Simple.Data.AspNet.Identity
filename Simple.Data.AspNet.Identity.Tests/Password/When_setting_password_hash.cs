@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Simple.Data.AspNet.Identity.Tests.Password
@@ -19,14 +20,14 @@ namespace Simple.Data.AspNet.Identity.Tests.Password
         [Test]
         public void Should_throw_argument_null_exception_if_user_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.SetPasswordHashAsync(null, ""));
+            Assert.Throws<ArgumentNullException>(async () => await _target.SetPasswordHashAsync(null, ""));
         }
 
         [Test]
         public void Should_throw_ObjectDisposedException_if_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.SetPasswordHashAsync(new IdentityUser(), ""));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.SetPasswordHashAsync(new IdentityUser(), ""));
         }
 
         [Test]
@@ -34,29 +35,29 @@ namespace Simple.Data.AspNet.Identity.Tests.Password
         {
             var user = TestData.GetTestUserJohn();
 
-            Assert.Throws<ArgumentException>(() => _target.SetPasswordHashAsync(user, hash));
+            Assert.Throws<ArgumentException>(async () => await _target.SetPasswordHashAsync(user, hash));
         }
 
         [Test]
-        public void Should_set_password_hash_correctly()
+        public async void Should_set_password_hash_correctly()
         {
             var user = TestData.GetTestUserJohn();
 
             var hashValue = Guid.NewGuid().ToString();
 
-            var task = _target.SetPasswordHashAsync(user, hashValue);
+            await _target.SetPasswordHashAsync(user, hashValue);
 
-            task.Wait();
-
-            var userFromDb = GetTestUser();
+            var userFromDb = await GetTestUser();
 
             Assert.That(userFromDb.PasswordHash, Is.EqualTo(hashValue));
         }
 
-        private IdentityUser GetTestUser()
+        private async Task<IdentityUser> GetTestUser()
         {
             dynamic db = Database.Open();
-            return db.AspNetUsers.FindAllByUserName("John").SingleOrDefault();
+            IdentityUser user = await db.AspNetUsers.FindAllByUserName("John").SingleOrDefault();
+
+            return user;
         }
     }
 }

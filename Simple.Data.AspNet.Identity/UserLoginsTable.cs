@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 
 namespace Simple.Data.AspNet.Identity
@@ -14,9 +15,9 @@ namespace Simple.Data.AspNet.Identity
             _tables = tables;
         }
 
-        public List<UserLoginInfo> GetLogins(IdentityUser user)
+        public async Task<List<UserLoginInfo>> GetLogins(IdentityUser user)
         {
-            var records = _db[_tables.UsersLogins].FindAllByUserId(user.Id);
+            var records = await _db[_tables.UsersLogins].FindAllByUserId(user.Id);
 
             var logins = new List<UserLoginInfo>();
             foreach (dynamic record in records)
@@ -27,25 +28,25 @@ namespace Simple.Data.AspNet.Identity
             return logins;
         }
 
-        public void AddLogin(IdentityUser user, UserLoginInfo login)
+        public async Task AddLogin(IdentityUser user, UserLoginInfo login)
         {
-            _db[_tables.UsersLogins].Insert(
+           await  _db[_tables.UsersLogins].Insert(
                 LoginProvider: login.LoginProvider,
                 ProviderKey: login.ProviderKey,
                 UserId: user.Id);
         }
 
-        public void RemoveLogin(IdentityUser user, UserLoginInfo login)
+        public async Task RemoveLogin(IdentityUser user, UserLoginInfo login)
         {
-            _db[_tables.UsersLogins].Delete(
+           await  _db[_tables.UsersLogins].Delete(
                 UserId: user.Id,
                 LoginProvider: login.LoginProvider,
                 ProviderKey: login.ProviderKey);
         }
 
-        public string FindUserId(UserLoginInfo login)
+        public async  Task<string> FindUserId(UserLoginInfo login)
         {
-            var result =
+            var result = await
                 _db[_tables.UsersLogins].FindAllByLoginProviderAndProviderKey(login.LoginProvider, login.ProviderKey)
                     .Select(_db[_tables.UsersLogins].UserId)
                     .FirstOrDefault();

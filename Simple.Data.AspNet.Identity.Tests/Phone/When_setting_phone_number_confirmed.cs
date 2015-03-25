@@ -21,23 +21,22 @@ namespace Simple.Data.AspNet.Identity.Tests.Phone
         {
             var target = new UserStore<IdentityUser>();
             target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => target.GetPhoneNumberConfirmedAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(async () => await target.GetPhoneNumberConfirmedAsync(new IdentityUser()));
         }
        
         [Test]
         public void Should_throw_ArgumentNullException_if_user_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.SetPhoneNumberConfirmedAsync(null,false));
+            Assert.Throws<ArgumentNullException>(async () => await _target.SetPhoneNumberConfirmedAsync(null,false));
         }
 
         [Test]
-        public void Should_set_phone_confirmed()
+        public async void Should_set_phone_confirmed()
         {
-            var task = _target.SetPhoneNumberConfirmedAsync(TestData.GetTestUserSue(), true);
-            task.Wait();
+            await _target.SetPhoneNumberConfirmedAsync(TestData.GetTestUserSue(), true);
 
             var db = Database.Open();
-            IdentityUser user = db.AspNetUsers.FindAllById(TestData.Sue_UserId).FirstOrDefault();
+            IdentityUser user = await db.AspNetUsers.FindAllById(TestData.Sue_UserId).FirstOrDefault();
 
             Assert.That(user.PhoneNumberConfirmed, Is.True);
         }

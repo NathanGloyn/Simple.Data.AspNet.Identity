@@ -22,55 +22,43 @@ namespace Simple.Data.AspNet.Identity.Tests.Claims
         [Test]
         public void Should_throw_argument_null_exception_if_user_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.GetClaimsAsync(null));
+            Assert.Throws<ArgumentNullException>(async () => await _target.GetClaimsAsync(null));
         }
 
         [Test]
         public void Should_throw_ObjectDisposedException_if_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.GetClaimsAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.GetClaimsAsync(new IdentityUser()));
         }
 
         [Test]
-        public void Should_return_no_claims_for_user_that_has_none()
+        public async void Should_return_no_claims_for_user_that_has_none()
         {
             var user = TestData.GetTestUserSue();
 
-            var task = _target.GetClaimsAsync(user);
-
-            task.Wait();
-
-            var claims = task.Result;
+            var claims = await _target.GetClaimsAsync(user);
 
             Assert.That(claims, Is.Empty);
         }
 
         [Test]
-        public void Should_return_claims_for_user()
+        public async void Should_return_claims_for_user()
         {
             var user = TestData.GetTestUserJohn();
 
-            var task = _target.GetClaimsAsync(user);
-
-            task.Wait();
-
-            var claims = task.Result;
+            var claims = await _target.GetClaimsAsync(user);
 
             Assert.That(claims, Is.Not.Empty);
             
         }
 
         [Test]
-        public void Should_return_expected_claims_for_user()
+        public async void Should_return_expected_claims_for_user()
         {
             var user = TestData.GetTestUserJohn();
 
-            var task = _target.GetClaimsAsync(user);
-
-            task.Wait();
-
-            var claims = task.Result;
+            var claims = await _target.GetClaimsAsync(user);
 
             Assert.That(claims.Count, Is.EqualTo(2));
 

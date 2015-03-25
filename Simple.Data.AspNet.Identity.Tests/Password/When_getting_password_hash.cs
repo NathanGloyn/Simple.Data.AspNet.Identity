@@ -19,38 +19,34 @@ namespace Simple.Data.AspNet.Identity.Tests.Password {
         [Test]
         public void Should_throw_ArgumentNullException_if_user_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.GetPasswordHashAsync(null));
+            Assert.Throws<ArgumentNullException>(async () => await _target.GetPasswordHashAsync(null));
         }
 
         [Test]
         public void Should_throw_ObjectDisposedException_if_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.GetPasswordHashAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.GetPasswordHashAsync(new IdentityUser()));
         }
 
         [Test]
-        public void Should_return_empty_string_for_invalid_user_id()
+        public async void Should_return_empty_string_for_invalid_user_id()
         {
             var user = new IdentityUser{Id = "abc"};
 
-            var task = _target.GetPasswordHashAsync(user);
+            var passwordHash = await _target.GetPasswordHashAsync(user);
 
-            task.Wait();
-
-            Assert.That(task.Result, Is.EqualTo(""));
+            Assert.That(passwordHash, Is.EqualTo(""));
         }
 
         [Test]
-        public void Should_return_user_password_hash()
+        public async void Should_return_user_password_hash()
         {
             var user = TestData.GetTestUserJohn();
 
-            var task = _target.GetPasswordHashAsync(user);
+            var passwordHash = await _target.GetPasswordHashAsync(user);
 
-            task.Wait();
-
-            Assert.That(task.Result, Is.EqualTo("sa;ldfkjsldfjlajte"));
+            Assert.That(passwordHash, Is.EqualTo("sa;ldfkjsldfjlajte"));
         }
     }
 }

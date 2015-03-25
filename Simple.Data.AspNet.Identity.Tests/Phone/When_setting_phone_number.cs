@@ -18,7 +18,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Phone
         {
             var target = new UserStore<IdentityUser>();
             target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => target.GetPhoneNumberConfirmedAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(async () => await target.GetPhoneNumberConfirmedAsync(new IdentityUser()));
         }
 
         [Test]
@@ -26,20 +26,18 @@ namespace Simple.Data.AspNet.Identity.Tests.Phone
         {
             var target = new UserStore<IdentityUser>();
 
-            Assert.Throws<ArgumentNullException>(() => target.SetPhoneNumberAsync(null, ""));
+            Assert.Throws<ArgumentNullException>(async () => await target.SetPhoneNumberAsync(null, ""));
         }
 
         [Test]
-        public void Should_set_phone()
+        public async void Should_set_phone()
         {
             var target = new UserStore<IdentityUser>();
 
-            var task = target.SetPhoneNumberAsync(TestData.GetTestUserJohn(), "987-654");
-
-            task.Wait();
+            await target.SetPhoneNumberAsync(TestData.GetTestUserJohn(), "987-654");
 
             var db = Database.Open();
-            IdentityUser userDetails = db.AspNetUsers.FindAllById(TestData.John_UserId).FirstOrDefault();
+            IdentityUser userDetails = await db.AspNetUsers.FindAllById(TestData.John_UserId).FirstOrDefault();
 
             Assert.That(userDetails.PhoneNumber, Is.EqualTo("987-654"));
 

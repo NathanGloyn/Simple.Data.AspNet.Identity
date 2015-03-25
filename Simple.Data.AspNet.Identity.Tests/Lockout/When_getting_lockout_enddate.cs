@@ -20,40 +20,36 @@ namespace Simple.Data.AspNet.Identity.Tests.Lockout
         public void Should_throw_ObjectDisposedException_if_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.GetLockoutEndDateAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.GetLockoutEndDateAsync(new IdentityUser()));
         }
 
         [Test]
         public void Should_throw_ArgumentNullException_if_user_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.GetLockoutEndDateAsync(null));
+            Assert.Throws<ArgumentNullException>(async () => await _target.GetLockoutEndDateAsync(null));
         }
 
         [Test]
-        public void Should_return_default_DateTimeOfset_if_user_has_no_lockout_date()
+        public async void Should_return_default_DateTimeOfset_if_user_has_no_lockout_date()
         {
-            var task = _target.GetLockoutEndDateAsync(TestData.GetTestUserJohn());
-
-            task.Wait();
+            var lockoutDate = await _target.GetLockoutEndDateAsync(TestData.GetTestUserJohn());
 
             var expected = new DateTimeOffset();
 
-            Assert.That(task.Result.Date, Is.EqualTo(expected.Date));
+            Assert.That(lockoutDate.Date, Is.EqualTo(expected.Date));
         }
 
         [Test]
-        public void Should_return_expected_DateTimeOffset()
+        public async void Should_return_expected_DateTimeOffset()
         {
             var user = new IdentityUser { Id = TestData.LockedOut_UserId };
 
-            var task = _target.GetLockoutEndDateAsync(user);
-
-            task.Wait();
+            var lockoutDate = await _target.GetLockoutEndDateAsync(user);
 
             var expected = new DateTimeOffset(DateTime.SpecifyKind(DateTime.Now.AddHours(1), DateTimeKind.Utc));
 
-            Assert.That(task.Result.Date, Is.EqualTo(expected.Date));
-            Assert.That(task.Result.Hour, Is.EqualTo(expected.Hour));
+            Assert.That(lockoutDate.Date, Is.EqualTo(expected.Date));
+            Assert.That(lockoutDate.Hour, Is.EqualTo(expected.Hour));
         }
     }
 }

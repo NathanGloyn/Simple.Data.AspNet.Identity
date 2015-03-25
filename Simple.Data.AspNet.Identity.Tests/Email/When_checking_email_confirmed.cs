@@ -20,23 +20,21 @@ namespace Simple.Data.AspNet.Identity.Tests.Email
         public void Should_throw_ObjectDisposedException_calling_FindByBName_and_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.GetEmailConfirmedAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.GetEmailConfirmedAsync(new IdentityUser()));
         }
 
         [Test]
         public void Should_throw_ArgumentNullException_if_user_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.GetEmailConfirmedAsync(null));
+            Assert.Throws<ArgumentNullException>(async () => await _target.GetEmailConfirmedAsync(null));
         }
 
         [Test]
-        public void Should_return_email_confirmed()
+        public async void Should_return_email_confirmed()
         {
-            var task = _target.GetEmailConfirmedAsync(TestData.GetTestUserJohn());
+            var emailConfirmed = await _target.GetEmailConfirmedAsync(TestData.GetTestUserJohn());
 
-            task.Wait();
-
-            Assert.That(task.Result, Is.True);
+            Assert.That(emailConfirmed, Is.True);
         }
     }
 }

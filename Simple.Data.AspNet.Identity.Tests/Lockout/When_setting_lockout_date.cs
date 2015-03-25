@@ -19,7 +19,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Lockout
         {
             var target = new UserStore<IdentityUser>();
             target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => target.SetLockoutEndDateAsync(new IdentityUser(), new DateTimeOffset()));
+            Assert.Throws<ObjectDisposedException>( async () => await target.SetLockoutEndDateAsync(new IdentityUser(), new DateTimeOffset()));
         }
 
         [Test]
@@ -27,22 +27,20 @@ namespace Simple.Data.AspNet.Identity.Tests.Lockout
         {
             var target = new UserStore<IdentityUser>();            
 
-            Assert.Throws<ArgumentNullException>(() => target.SetLockoutEndDateAsync(null, new DateTimeOffset()));
+            Assert.Throws<ArgumentNullException>(async () => await target.SetLockoutEndDateAsync(null, new DateTimeOffset()));
         }
 
         [Test]
-        public void Should_set_the_lockout_date()
+        public async void Should_set_the_lockout_date()
         {
             var target = new UserStore<IdentityUser>();
 
             var lockout = DateTimeOffset.UtcNow.AddMinutes(15);
 
-            var task = target.SetLockoutEndDateAsync(TestData.GetTestUserJohn(), lockout);
-
-            task.Wait();
+            await target.SetLockoutEndDateAsync(TestData.GetTestUserJohn(), lockout);
 
             var db = Database.Open();
-            IdentityUser record = db.AspNetUsers.FindAllByUserName("John").SingleOrDefault();
+            IdentityUser record = await db.AspNetUsers.FindAllByUserName("John").SingleOrDefault();
 
             Assert.That(record.LockoutEndDateUtc.Value.Date,Is.EqualTo(lockout.UtcDateTime.Date));
             Assert.That(record.LockoutEndDateUtc.Value.Hour, Is.EqualTo(lockout.UtcDateTime.Hour));

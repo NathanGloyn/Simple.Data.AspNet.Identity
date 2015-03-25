@@ -19,7 +19,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Lockout
         {
             var target = new UserStore<IdentityUser>();
             target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => target.SetLockoutEnabledAsync(new IdentityUser(), true));
+            Assert.Throws<ObjectDisposedException>(async () => await target.SetLockoutEnabledAsync(new IdentityUser(), true));
         }
 
         [Test]
@@ -27,20 +27,18 @@ namespace Simple.Data.AspNet.Identity.Tests.Lockout
         {
             var target = new UserStore<IdentityUser>();
 
-            Assert.Throws<ArgumentNullException>(() => target.SetLockoutEnabledAsync(null,true));
+            Assert.Throws<ArgumentNullException>(async () => await target.SetLockoutEnabledAsync(null,true));
         }
 
         [Test]
-        public void Should_set_the_lockout_enabled()
+        public async void Should_set_the_lockout_enabled()
         {
             var target = new UserStore<IdentityUser>();
 
-            var task = target.SetLockoutEnabledAsync(TestData.GetTestUserJohn(), true);
-
-            task.Wait();
+            await target.SetLockoutEnabledAsync(TestData.GetTestUserJohn(), true);
 
             var db = Database.Open();
-            IdentityUser record = db.AspNetUsers.FindAllByUserName("John").SingleOrDefault();
+            IdentityUser record = await db.AspNetUsers.FindAllByUserName("John").SingleOrDefault();
 
             Assert.That(record.LockoutEnabled, Is.True);
         }

@@ -20,23 +20,21 @@ namespace Simple.Data.AspNet.Identity.Tests.TwoFactor
         public void Should_throw_ObjectDisposedException_calling_FindByBName_and_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.GetTwoFactorEnabledAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.GetTwoFactorEnabledAsync(new IdentityUser()));
         }
 
         [Test]
         public void Should_throw_ArgumentNullException_if_user_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.GetTwoFactorEnabledAsync(null));
+            Assert.Throws<ArgumentNullException>( async () => await _target.GetTwoFactorEnabledAsync(null));
         }
 
         [Test]
-        public void Should_return_phone_confirmed()
+        public async void Should_return_two_factor_enabled()
         {
-            var task = _target.GetTwoFactorEnabledAsync(TestData.GetTestUserJohn());
+            var enabled = await _target.GetTwoFactorEnabledAsync(TestData.GetTestUserJohn());
 
-            task.Wait();
-
-            Assert.That(task.Result, Is.True);
+            Assert.That(enabled, Is.True);
         }         
     }
 }

@@ -11,7 +11,7 @@ namespace Simple.Data.AspNet.Identity.Tests.Email
         {
             var target = new UserStore<IdentityUser>();
             target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => target.GetEmailAsync(new IdentityUser()));
+            Assert.Throws<ObjectDisposedException>(async () => await target.GetEmailAsync(new IdentityUser()));
         }
 
         [Test]
@@ -19,19 +19,17 @@ namespace Simple.Data.AspNet.Identity.Tests.Email
         {
             var target = new UserStore<IdentityUser>();
 
-            Assert.Throws<ArgumentNullException>(() => target.GetEmailAsync(null));
+            Assert.Throws<ArgumentNullException>(async () => await target.GetEmailAsync(null));
         }
 
         [Test]
-        public void Should_return_email_for_user_supplied()
+        public async void Should_return_email_for_user_supplied()
         {
             var target = new UserStore<IdentityUser>();
             var user = TestData.GetTestUserJohn();
-            var task = target.GetEmailAsync(user);
+            var task = await target.GetEmailAsync(user);
 
-            task.Wait();
-
-            Assert.That(task.Result, Is.EqualTo(user.Email));
+            Assert.That(task, Is.EqualTo(user.Email));
         }
     }
 }

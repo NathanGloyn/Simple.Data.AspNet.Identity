@@ -19,31 +19,27 @@ namespace Simple.Data.AspNet.Identity.Tests.Password
         [Test]
         public void Should_throw_argument_null_exception_if_user_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.HasPasswordAsync(null));
+            Assert.Throws<ArgumentNullException>(async () => await _target.HasPasswordAsync(null));
         }
 
         [Test]
-        public void Should_return_false_if_no_hash_found_for_user()
+        public async void Should_return_false_if_no_hash_found_for_user()
         {
             var user = new IdentityUser { Id = TestData.UserNoPasswordHash_UserId, UserName = "Jayne" };
 
-            var task = _target.HasPasswordAsync(user);
+            var hasPassword = await _target.HasPasswordAsync(user);
 
-            task.Wait();
-
-            Assert.That(task.Result, Is.False);
+            Assert.That(hasPassword, Is.False);
         }
 
         [Test]
-        public void Should_return_true_for_user_with_hash()
+        public async void Should_return_true_for_user_with_hash()
         {
             var user = TestData.GetTestUserJohn();
 
-            var task = _target.HasPasswordAsync(user);
+            var hasPassword = await _target.HasPasswordAsync(user);
 
-            task.Wait();
-
-            Assert.That(task.Result, Is.True);            
+            Assert.That(hasPassword, Is.True);            
         }    
     }
 }

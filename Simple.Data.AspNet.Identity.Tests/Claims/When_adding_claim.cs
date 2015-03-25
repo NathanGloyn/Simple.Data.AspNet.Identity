@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using NUnit.Framework;
 
@@ -20,41 +22,36 @@ namespace Simple.Data.AspNet.Identity.Tests.Claims
         [Test]
         public void Should_throw_argument_null_exception_if_user_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.AddClaimAsync(null, new Claim(ClaimTypes.Email, "")));
+            Assert.Throws<ArgumentNullException>(async () => await _target.AddClaimAsync(null, new Claim(ClaimTypes.Email, "")));
         }
 
         [Test]
         public void Should_throw_ObjectDisposedException_if_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.AddClaimAsync(new IdentityUser(), new Claim("","")));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.AddClaimAsync(new IdentityUser(), new Claim("","")));
         }
 
         [Test]
            public void Should_throw_argument_null_exception_if_claim_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.AddClaimAsync(new IdentityUser(), null));
+            Assert.Throws<ArgumentNullException>(async () => await _target.AddClaimAsync(new IdentityUser(), null));
         }
 
-
         [Test]
-        public void Should_add_claim_for_specified_user()
+        public async void Should_add_claim_for_specified_user()
         {
             var user = TestData.GetTestUserSue();
             var claim = new Claim(ClaimTypes.Email, "Sue@test.com");
 
-            var task = _target.AddClaimAsync(user, claim);
-
-            task.Wait();
+            await _target.AddClaimAsync(user, claim);
 
             var db = Database.Open();
 
-            var claims = db.AspNetUserClaims.FindAllByUserId(TestData.Sue_UserId);
+            var claims = await db.AspNetUserClaims.FindAllByUserId(TestData.Sue_UserId).ToList();
 
-            Assert.That(claims.Count(), Is.EqualTo(1));
+            Assert.That(claims.Count, Is.EqualTo(1));
 
-        }
-
-         
+        } 
     }
 }

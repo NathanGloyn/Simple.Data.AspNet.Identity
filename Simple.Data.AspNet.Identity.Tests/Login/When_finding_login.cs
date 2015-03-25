@@ -22,33 +22,31 @@ namespace Simple.Data.AspNet.Identity.Tests.Login
         public void Should_throw_ObjectDisposedException_if_disposed()
         {
             _target.Dispose();
-            Assert.Throws<ObjectDisposedException>(() => _target.FindAsync(new UserLoginInfo("", "")));
+            Assert.Throws<ObjectDisposedException>(async () => await _target.FindAsync(new UserLoginInfo("", "")));
         }
 
         [Test]
         public void Should_throw_ArgumentNullException_if_loginInfo_is_null()
         {
-            Assert.Throws<ArgumentNullException>(() => _target.FindAsync(null));
+            Assert.Throws<ArgumentNullException>(async () => await _target.FindAsync(null));
         }
 
         [Test]
-        public void Should_return_null_if_user_not_found()
+        public async  void Should_return_null_if_user_not_found()
         {
             var login = new UserLoginInfo("Yahoo", "ghi");
-            var task = _target.FindAsync(login);
-            task.Wait();
+            var userLogin = await _target.FindAsync(login);
 
-            Assert.That(task.Result, Is.Null);
+            Assert.That(userLogin, Is.Null);
         }
 
         [Test]
-        public void Should_return_user_for_login()
+        public async void Should_return_user_for_login()
         {
             var login = new UserLoginInfo("Google", "123");
-            var task = _target.FindAsync(login);
-            task.Wait();
+            var userLogin = await _target.FindAsync(login);
 
-            Assert.That(task.Result.Id, Is.EqualTo(TestData.John_UserId));
+            Assert.That(userLogin.Id, Is.EqualTo(TestData.John_UserId));
 
         }
     }
